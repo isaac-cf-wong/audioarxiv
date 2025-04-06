@@ -31,7 +31,9 @@ pip install audioarxiv
 
 ## 🛠 Usage
 
+```bash
 audioarxiv --id "<arxiv id>"
+```
 
 
 ### 🎙️ Text-to-Speech Options
