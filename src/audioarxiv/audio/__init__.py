@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from .paper import Paper
+from .base import Audio
 
 __all__ = [
-    'Paper'
+    'Audio'
 ]

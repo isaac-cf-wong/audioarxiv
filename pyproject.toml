@@ -27,6 +27,7 @@ dependencies = [
     "pyttsx3",
     "pymupdf",
     "sympy",
+    "nltk",
 ]
 
 [project.optional-dependencies]
@@ -57,6 +58,9 @@ test = [
 Documentation = "https://github.com/microsoft/python-package-template/tree/main#readme"
 Source = "https://github.com/microsoft/python-package-template"
 Tracker = "https://github.com/microsoft/python-package-template/issues"
+
+[project.scripts]
+audioarxiv = "audioarxiv.tools.main:main"
 
 [tool.flit.module]
 name = "audioarxiv"

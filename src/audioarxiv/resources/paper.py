@@ -3,39 +3,20 @@ from __future__ import annotations
 import re
 import tempfile
 from datetime import datetime
+from typing import Union
 
 import arxiv
 import fitz
-from sympy import sympify
-
-
-def process_math_equations(text):
-    """Detects LaTeX-style math symbols and converts them to a readable format."""
-
-    math_patterns = [r"\$(.*?)\$", r"\$\$(.*?)\$\$"]  # Inline and block math
-
-    for pattern in math_patterns:
-        matches = re.findall(pattern, text)
-        for match in matches:
-            try:
-                readable_expr = sympify(match).srepr()  # Convert LaTeX to readable
-                text = text.replace(f"${match}$", f"Math: {readable_expr}")
-            except Exception:
-                text = text.replace(f"${match}$", f"Equation: {match}")  # Fallback
-
-    return text
 
 
 class Paper:
     def __init__(self,
-                 arxiv_id: str,
                  page_size: int = 100,
                  delay_seconds: float = 3.0,
                  num_retries: int = 3):
         """An arXiv paper.
 
         Args:
-            arxiv_id (str): The arXiv ID.
             page_size (int, optional): Maximum number of results fetched in a single API request. Smaller pages can
             be retrieved faster, but may require more round-trips. The API's limit is 2000 results per page.
             Defaults to 100.
@@ -46,11 +27,121 @@ class Paper:
             num_retries (int, optional): Number of times to retry a failing API request before raising an Exception.
             Defaults to 3.
         """
-        client = arxiv.Client(page_size=page_size,
-                                   delay_seconds=delay_seconds,
-                                   num_retries=num_retries)
-        self.paper = next(client.results(arxiv.Search(id_list=[arxiv_id])))
+        self.page_size = page_size
+        self.delay_seconds = delay_seconds
+        self.num_retries = num_retries
+        self._client = None
         self._sections = []
+
+    @property
+    def page_size(self) -> int:
+        """Get the page size.
+
+        Returns:
+            int: Page size.
+        """
+        return self._page_size
+
+    @page_size.setter
+    def page_size(self, value: int):
+        """Set the page size.
+
+        Args:
+            value (int): Page size.
+
+        Raises:
+            ValueError: value has to be int.
+        """
+        if not isinstance(value, int):
+            raise ValueError(f'value = {value} ({type(value)}) has to be int.')
+        self._page_size = value
+        self._client = None
+
+    @property
+    def delay_seconds(self) -> float:
+        """Get the delay in seconds.
+
+        Returns:
+            float: Delay in seconds.
+        """
+        return self._delay_seconds
+
+    @delay_seconds.setter
+    def delay_seconds(self, value: int | float):
+        """Set the delay in seconds.
+
+        Args:
+            value (Union[int, float]): Delay in seconds.
+        """
+        if not isinstance(value, int):
+            if not isinstance(value, float):
+                raise ValueError(f'value = {value} ({type(value)}) has to be int or float.')
+        self._delay_seconds = value
+        self._client = None
+
+    @property
+    def num_retries(self) -> int:
+        """Get the number of retries.
+
+        Returns:
+            int: Number of retries.
+        """
+        return self._num_retries
+
+    @num_retries.setter
+    def num_retries(self, value: int):
+        """Set the number of retries.
+
+        Args:
+            value (int): Number of retries.
+
+        Raises:
+            ValueError: value has to be int.
+        """
+        if not isinstance(value, int):
+            raise ValueError(f'value = {value} ({type(value)}) has to be int.')
+        self._num_retries = value
+        self._client
+
+    @property
+    def settings(self) -> dict:
+        """Get the settings of the client.
+
+        Returns:
+            dict: Settings of the client.
+        """
+        return {'page_size': self.page_size,
+                'delay_seconds': self.delay_seconds,
+                'num_retries': self.num_retries}
+
+    @settings.setter
+    def settings(self, values: dict):
+        """Set the client settings.
+
+        Args:
+            values (dict): A dictionary of the settings for the client.
+
+        Raises:
+            ValueError: values has to be dict.
+        """
+        if not isinstance(values, dict):
+            raise ValueError(f'values = {values} ({type(values)}) has to be dict.')
+        for prop in ['page_size', 'delay_seconds', 'num_retries']:
+            if prop in values:
+                setattr(self, prop, values[prop])
+
+    @property
+    def client(self) -> arxiv.Client:
+        """Get the arxiv client.
+
+        Returns:
+            arxiv.Client: arxiv client.
+        """
+        if self._client is None:
+            self._client = arxiv.Client(page_size=self.page_size,
+                                        delay_seconds=self.delay_seconds,
+                                        num_retries=self.num_retries)
+        return self._client
 
     @property
     def title(self) -> str:
@@ -97,6 +188,9 @@ class Paper:
         """
         return self.paper.updated
 
+    def search_by_arxiv_id(self, arxiv_id: str):
+        self.paper = next(self.client.results(arxiv.Search(id_list=[arxiv_id])))
+
     def download_pdf(self,
                      dirpath: str = './',
                      filename: str = '') -> str:
@@ -129,9 +223,7 @@ class Paper:
                         text = block[4].strip()
 
                         # Detect section headers using common patterns (uppercase, numbered, bold)
-                        if (text.isupper() or
-                            re.match(r"^\d+(\.\d+)*\s+\w+", text) or
-                            text.endswith(":")):
+                        if (text.isupper() or re.match(r"^\d+(\.\d+)*\s+\w+", text) or text.endswith(":")):
 
                             # Store previous section before switching
                             if current_section["header"] or current_section["content"]:
@@ -139,8 +231,6 @@ class Paper:
 
                             current_section = {"header": text, "content": []}  # New section
                         else:
-                            # Process math expressions
-                            text = process_math_equations(text)
                             current_section["content"].append(text)
 
                 # Append the last section
@@ -148,15 +238,3 @@ class Paper:
                     self._sections.append(current_section)
 
         return self._sections
-
-
-if __name__ == '__main__':
-    paper = Paper('2503.22919')
-
-    import pyttsx3
-
-    engine = pyttsx3.init()
-    engine.say('I am reading a paper.')
-    engine.say('I am reading another paper.')
-    engine.runAndWait()
-    engine.stop()
