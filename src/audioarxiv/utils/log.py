@@ -60,17 +60,6 @@ def setup_logger(logger: logging.Logger, outdir='.', label=None, log_level='INFO
         logger.info(f'Running audioarxiv version: {version}')
 
 
-def get_version_information() -> str:
-    """Version information.
-
-    Returns:
-        str: Version information.
-    """
-    from audioarxiv import __version__
-
-    return __version__
-
-
 def loaded_modules_dict() -> dict:
     """Get the modules and the versions.
 

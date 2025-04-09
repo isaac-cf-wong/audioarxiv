@@ -9,8 +9,19 @@ from . import audio, preprocess, resources
 
 __version__ = "0.1.0"
 
+
+def get_version_information() -> str:
+    """Version information.
+
+    Returns:
+        str: Version information.
+    """
+    return __version__
+
+
 __all__ = [
     'audio',
     'preprocess',
-    'resources'
+    'resources',
+    'get_version_information',
 ]
