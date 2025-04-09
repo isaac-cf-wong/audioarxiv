@@ -9,9 +9,9 @@ import time
 import configargparse
 from platformdirs import user_config_dir
 
+from .. import logger
 from ..audio import Audio
 from ..resources import Paper
-from ..utils import logger
 
 
 def handle_exit(signum:int , frame: object): #

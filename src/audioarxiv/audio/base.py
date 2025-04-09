@@ -4,8 +4,8 @@ import time
 
 import pyttsx3
 
+from .. import logger
 from ..preprocess import get_sentences
-from ..utils import logger
 
 
 class Audio:
