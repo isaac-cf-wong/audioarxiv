@@ -14,20 +14,34 @@ from ..resources import Paper
 from ..utils import logger
 
 
-def handle_exit(signum, frame):
-    logger.info(f"\nReceived signal {signum}. Exiting cleanly.")
+def handle_exit(signum:int , frame: object): #
+    """Handle the exit.
+
+    Args:
+        signum (int): Signal number.
+        frame (object): A frame object.
+    """
+    logger.info("\nReceived signal %s. Exiting cleanly.", signum)
     sys.exit(0)
 
 
-def save_settings(config_path, settings):
+def save_settings(config_path: str, settings: dict):
+    """Save the settings to file.
+
+    Args:
+        config_path (str): Path to the configuration file.
+        settings (dict): Dictionary of the settings.
+    """
     try:
         with open(config_path, 'w') as f:
             json.dump(settings, f, indent=4)
     except Exception as e:
-        logger.error(f'Error saving settings: {e}')
+        logger.error('Error saving settings: %s', e)
 
 
 def main():
+    """Main function.
+    """
     signal.signal(signal.SIGINT, handle_exit)
     signal.signal(signal.SIGTERM, handle_exit)
 
@@ -82,7 +96,7 @@ def main():
                 settings.update(loaded_settings)
                 audio.settings = settings['audio']
         except Exception as e:
-            logger.error(f'Error loading settings: {e}. Using defaults.')
+            logger.error('Error loading settings: %s. Using defaults.', e)
     else:
         logger.info(f'Saving default settings to {config_path}...')
         save_settings(config_path, settings)
@@ -116,7 +130,7 @@ def main():
 
     # Write the settings to file if there are changes.
     if audio_settings_changed or paper_settings_changed:
-        logger.info(f'Saving updated settings to {config_path}...')
+        logger.info('Saving updated settings to %s...', config_path)
         save_settings(config_path=config_path, settings=settings)
 
     # Search the paper.
@@ -125,13 +139,13 @@ def main():
         logger.info(f'Configuration file: {config_path}')
         logger.info('Audio settings')
         for key, value in settings['audio'].items():
-            logger.info(f'{key}: {value}')
+            logger.info('%s: %s', key, value)
 
         logger.info('Paper settings')
         for key, value in settings['paper'].items():
-            logger.info(f'{key}: {value}')
+            logger.info('%s: %s', key, value)
 
-        logger.info(f'Searching arxiv:{args.id}...')
+        logger.info('Searching arxiv: %s...', args.id)
         paper.search_by_arxiv_id(arxiv_id=args.id)
         # Get the sections
         sections = paper.sections

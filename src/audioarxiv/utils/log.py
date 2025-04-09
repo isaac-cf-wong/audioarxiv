@@ -5,17 +5,17 @@ import logging
 import subprocess
 import sys
 from pathlib import Path
-from typing import Union
 
 from pandas import DataFrame
 
 logger = logging.getLogger('audioarxiv')
 
 
-def setup_logger(outdir='.', label=None, log_level='INFO', print_version=False):
+def setup_logger(logger: logging.Logger, outdir='.', label=None, log_level='INFO', print_version=False):
     """ Setup logging output: call at the start of the script to use
 
     Args:
+        logger (logging.Logger): The logger instance to be configured.
         outdir (str): If supplied, write the logging output to outdir/label.log
         label (str): If supplied, write the logging output to outdir/label.log
         log_level (str, optional): ['debug', 'info', 'warning']
@@ -26,23 +26,22 @@ def setup_logger(outdir='.', label=None, log_level='INFO', print_version=False):
     if isinstance(log_level, str):
         try:
             level = getattr(logging, log_level.upper())
-        except AttributeError:
-            raise ValueError(f'log_level {log_level} not understood')
+        except AttributeError as exc:
+            raise ValueError(f'log_level {log_level} not understood') from exc
     else:
         level = int(log_level)
 
-    logger = logging.getLogger('audioarxiv')
     logger.propagate = False
     logger.setLevel(level)
 
-    if not any([isinstance(h, logging.StreamHandler) for h in logger.handlers]):
+    if not any(isinstance(h, logging.StreamHandler) for h in logger.handlers):
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(logging.Formatter(
             '%(asctime)s %(name)s %(levelname)-8s: %(message)s', datefmt='%H:%M'))
         stream_handler.setLevel(level)
         logger.addHandler(stream_handler)
 
-    if not any([isinstance(h, logging.FileHandler) for h in logger.handlers]):
+    if not any(isinstance(h, logging.FileHandler) for h in logger.handlers):
         if label:
             Path(outdir).mkdir(parents=True, exist_ok=True)
             log_file = f'{outdir}/{label}.log'
@@ -67,7 +66,8 @@ def get_version_information() -> str:
     Returns:
         str: Version information.
     """
-    from .. import __version__
+    from audioarxiv import __version__
+
     return __version__
 
 
@@ -123,7 +123,7 @@ def env_package_list(as_dataframe: bool = False) -> list | DataFrame:
     # otherwise try and use Pip
     if not conda_detected:
         try:
-            import pip  # noqa: F401
+            import pip  # noqa: F401 # pylint: disable=unused-import
         except ModuleNotFoundError:  # no pip?
             # not a conda environment, and no pip, so just return
             # the list of loaded modules

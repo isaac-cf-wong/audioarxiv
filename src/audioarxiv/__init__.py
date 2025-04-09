@@ -5,4 +5,12 @@
 """Python Package Template"""
 from __future__ import annotations
 
+from . import audio, preprocess, resources
+
 __version__ = "0.1.0"
+
+__all__ = [
+    'audio',
+    'preprocess',
+    'resources'
+]
