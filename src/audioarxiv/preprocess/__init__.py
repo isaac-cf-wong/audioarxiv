@@ -1,3 +1,11 @@
+"""
+This subpackage provides functions to preprocess articles for better audio rendering.
+
+Submodules:
+-----------
+- article: Text and preprocessing functions
+- math_equation: Math equation preprocessing functions
+"""
 from __future__ import annotations
 
 from .article import \

@@ -28,6 +28,7 @@ dependencies = [
     "pymupdf",
     "sympy",
     "nltk",
+    "pandas",
 ]
 
 [project.optional-dependencies]

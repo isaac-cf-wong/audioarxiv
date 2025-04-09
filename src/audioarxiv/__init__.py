@@ -1,7 +1,20 @@
-#   -------------------------------------------------------------
-#   Copyright (c) Microsoft Corporation. All rights reserved.
-#   Licensed under the MIT License. See LICENSE in project root for information.
-#   -------------------------------------------------------------
+"""
+audioarxiv: A python package to let you fetch the research papers from arXiv and read them aloud.
+
+This package provides tools to:
+- Fetch research papers from arXiv
+- Preprocess the articles for better audio rendering
+
+Submodules:
+-----------
+- audio: Core audio generation and playback utilities
+- preprocess: Text and paper preprocessing functions
+- resources: Paper models and utilities for paper handling
+
+Usage example:
+--------------
+$ audioarxiv --id <arxiv-id>
+"""
 from __future__ import annotations
 
 import json
@@ -14,7 +27,7 @@ from pandas import DataFrame
 
 from . import audio  # noqa: F401  # pylint: disable=unused-import
 from . import preprocess  # noqa: F401  # pylint: disable=unused-import
-from . import resources
+from . import resources  # noqa: F401  # pylint: disable=unused-import
 
 __version__ = "0.1.0"
 
