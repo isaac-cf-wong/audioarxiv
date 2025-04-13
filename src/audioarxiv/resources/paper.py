@@ -11,7 +11,7 @@ import arxiv
 import fitz
 
 
-def validate_paper_arguments(paper_size: int,
+def validate_paper_arguments(page_size: int,
                              delay_seconds: float,
                              num_retries: int) -> dict:
     """Validate the arguments for Paper.
@@ -30,7 +30,7 @@ def validate_paper_arguments(paper_size: int,
     Returns:
         dict: paper_size, delay_seconds, num_retries
     """
-    return {'paper_size': paper_size,
+    return {'page_size': page_size,
             'delay_seconds': delay_seconds,
             'num_retries': num_retries}
 
@@ -58,10 +58,10 @@ class Paper:
             validate_arguments (bool, optional): If True, validate the arguments. Defaults to True.
         """
         if validate_arguments:
-            arguments = validate_paper_arguments(paper_size=page_size,
+            arguments = validate_paper_arguments(page_size=page_size,
                                                  delay_seconds=delay_seconds,
                                                  num_retries=num_retries)
-            page_size = arguments['paper_size']
+            page_size = arguments['page_size']
             delay_seconds = arguments['delay_seconds']
             num_retries = arguments['num_retries']
         self._client = arxiv.Client(page_size=page_size,

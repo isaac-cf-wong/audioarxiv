@@ -17,11 +17,14 @@ $ audioarxiv --id <arxiv-id>
 """
 from __future__ import annotations
 
-from . import audio  # noqa: F401  # pylint: disable=unused-import
-from . import preprocess  # noqa: F401  # pylint: disable=unused-import
-from . import resources  # noqa: F401  # pylint: disable=unused-import
-from .utils import logger, setup_logger
+from . import audio, preprocess, resources
 
 __version__ = "0.1.0"
 
-setup_logger(logger)
+
+__all__ = [
+    'audio',
+    'preprocess',
+    'resources',
+    '__version__'
+]
