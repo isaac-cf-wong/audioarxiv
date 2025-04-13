@@ -42,6 +42,85 @@ def save_settings(config_path: str, settings: dict):
         logger.error('Error saving settings: %s', e)
 
 
+def initialize_configuration(args: configargparse.Namespace) -> tuple:
+    """Initialize the configuration.
+
+    Args:
+        args (configargparse.Namespace): Arguments.
+
+    Returns:
+        tuple: settings, config_path
+    """
+    config_dir = user_config_dir('audioarxiv')
+    os.makedirs(config_dir, exist_ok=True)
+    config_file = 'config.json'
+    config_path = os.path.join(config_dir, config_file)
+
+    # Default settings.
+    settings = {
+        'audio': {
+            'rate': 140,
+            'volume': 0.9,
+            'voice': None,
+            'pause_seconds': 0.1
+        },
+        'paper': {
+            'page_size': 100,
+            'delay_seconds': 3.0,
+            'num_retries': 3
+        }
+    }
+
+    # Validate the default settings.
+    if os.path.exists(config_path):
+        # Load the settings from the config file.
+        try:
+            with open(config_path) as f:
+                loaded_settings = json.load(f)
+                settings.update(loaded_settings)
+                settings['audio'] = validate_audio_arguments(**settings['audio'])
+                settings['paper'] = validate_paper_arguments(**settings['paper'])
+        except Exception as e:
+            logger.error('Error loading settings: %s. Using defaults.', e)
+    else:
+        logger.info(f'Saving default settings to {config_path}...')
+        settings['audio'] = validate_audio_arguments(**settings['audio'])
+        settings['paper'] = validate_paper_arguments(**settings['paper'])
+        save_settings(config_path, settings)
+
+    # Check audio properties
+    audio_properties = list(settings['audio'].keys())
+    audio_settings_changed = False
+    for prop in audio_properties:
+        value = getattr(args, prop)
+        if value is not None:
+            # Compare with the existing setting
+            if value != settings['audio'][prop]:
+                settings['audio'][prop] = value
+                audio_settings_changed = True
+    if audio_settings_changed:
+        settings['audio'] = validate_audio_arguments(**settings['audio'])
+
+    # Check paper properties
+    paper_properties = list(settings['paper'].keys())
+    paper_settings_changed = False
+    for prop in paper_properties:
+        value = getattr(args, prop)
+        if value is not None:
+            # Compare with the existing setting
+            if value != settings['paper'][prop]:
+                settings['paper'][prop] = value
+                paper_settings_changed = True
+    if paper_settings_changed:
+        settings['paper'] = validate_paper_arguments(**settings['paper'])
+
+    # Write the settings to file if there are changes.
+    if audio_settings_changed or paper_settings_changed:
+        logger.info('Saving updated settings to %s...', config_path)
+        save_settings(config_path=config_path, settings=settings)
+    return settings, config_path
+
+
 def main():
     """Main function.
     """
@@ -63,82 +142,19 @@ def main():
 
     args = parser.parse_args()
 
-    config_dir = user_config_dir('audioarxiv')
-    os.makedirs(config_dir, exist_ok=True)
-    config_file = 'config.json'
-    config_path = os.path.join(config_dir, config_file)
-    # Default settings.
-    settings = {
-        'audio': {
-            'rate': 140,
-            'volume': 0.9,
-            'voice': None,
-            'pause_seconds': 0.1
-        },
-        'paper': {
-            'page_size': 100,
-            'delay_seconds': 3.0,
-            'num_retries': 3
-        }
-    }
-
     if args.list_voices:
-        audio = Audio(**settings['audio'])
+        audio = Audio()
         audio.list_voices()
         return
 
-    # Validate the default settings.
-    settings['audio'] = validate_audio_arguments(**settings['audio'])
-    settings['paper'] = validate_paper_arguments(**settings['paper'])
-
-    if os.path.exists(config_path):
-        # Load the settings from the config file.
-        try:
-            with open(config_path) as f:
-                loaded_settings = json.load(f)
-                settings.update(loaded_settings)
-                settings['audio'] = validate_audio_arguments(**settings['audio'])
-                settings['paper'] = validate_paper_arguments(**settings['paper'])
-        except Exception as e:
-            logger.error('Error loading settings: %s. Using defaults.', e)
-    else:
-        logger.info(f'Saving default settings to {config_path}...')
-        save_settings(config_path, settings)
-
-    # Check audio properties
-    audio_properties = list(settings['audio'].keys())
-    audio_settings_changed = False
-    for prop in audio_properties:
-        value = getattr(args, prop)
-        if value is not None:
-            # Compare with the existing setting
-            if value != settings['audio'][prop]:
-                settings['audio'][prop] = value
-                audio_settings_changed = True
-    if audio_settings_changed:
-        settings['audio'] = validate_audio_arguments(**settings['audio'])
+    # Get the settings
+    settings, config_path = initialize_configuration(args)
 
     # The Audio instance.
     audio = Audio(**settings['audio'])
 
     # Load the paper.
     paper = Paper(**settings['paper'])
-    paper_properties = list(settings['paper'].keys())
-    paper_settings_changed = False
-    for prop in paper_properties:
-        value = getattr(args, prop)
-        if value is not None:
-            # Compare with the existing setting
-            if value != settings['paper'][prop]:
-                settings['paper'][prop] = value
-                paper_settings_changed = True
-    if paper_settings_changed:
-        settings['paper'] = validate_paper_arguments(**settings['paper'])
-
-    # Write the settings to file if there are changes.
-    if audio_settings_changed or paper_settings_changed:
-        logger.info('Saving updated settings to %s...', config_path)
-        save_settings(config_path=config_path, settings=settings)
 
     # Search the paper.
     if args.id is not None:

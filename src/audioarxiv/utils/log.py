@@ -1,3 +1,6 @@
+"""
+Functions for logging.
+"""
 from __future__ import annotations
 
 import json
@@ -7,8 +10,6 @@ import sys
 from pathlib import Path
 
 from pandas import DataFrame
-
-logger = logging.getLogger('audioarxiv')
 
 
 def get_version_information() -> str:

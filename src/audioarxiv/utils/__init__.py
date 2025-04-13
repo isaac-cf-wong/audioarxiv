@@ -7,8 +7,11 @@ Submodules:
 """
 from __future__ import annotations
 
-from .log import logger, setup_logger
+import logging
 
+from .log import setup_logger
+
+logger = logging.getLogger('audioarxiv')
 setup_logger(logger)
 
 __all__ = [
