@@ -1,19 +1,67 @@
+"""
+A base class for audio.
+"""
 from __future__ import annotations
 
 import time
 
 import pyttsx3
+import validate
 
 from .. import logger
 from ..preprocess import get_sentences
 
 
+def validate_audio_arguments(rate: float,
+                             volume: float,
+                             voice: str | None,
+                             pause_seconds: float) -> dict:
+    """Validate the arguments for Audio.
+
+    Args:
+        rate (float): Number of words per minute.
+        volume (float): Volume.
+        voice (Optional[str]): Voice id.
+        The available voice ids can be found with `list_voices()`.
+        pause_seconds (float): Duration of pause between sentences.
+
+    Returns:
+        dict: rate, volume, voice, pause_seconds
+    """
+    engine = pyttsx3.init()
+    available_voices = engine.getProperty('voices')
+    rate = max(50, min(500, rate))
+    volume = max(0.0, min(1.0, volume))
+    if isinstance(voice, int):
+        if 0 <= voice < len(available_voices):
+            voice = available_voices[voice].id
+        else:
+            voice = None
+            logger.error('Invalid voice index = %s. Keeping current voice.', voice)
+    elif isinstance(voice, str):
+        if voice not in [v.id for v in available_voices]:
+            voice = None
+            logger.error('Invalid voice ID = %s. Keeping current voice.', voice)
+    elif voice is not None:
+        logger.error('Unsupported datatype of voice = %s. It must be either int or str.', type(voice))
+    if pause_seconds < 0:
+        pause_seconds = None
+        logger.error('pause = %s must be non-negative. Keeping the current pause.', value)
+    return {'rate': rate,
+            'volume': volume,
+            'voice': voice,
+            'pause_seconds': pause_seconds}
+
+
 class Audio:
+    """A class to generate audio from text.
+    """
     def __init__(self,
                  rate: float = 140,
                  volume: float = 0.9,
                  voice: str | None = None,
-                 pause_seconds: float = 0.1):
+                 pause_seconds: float = 0.1,
+                 validate_arguments: bool = True):
         """A class to configure the audio.
 
         Args:
@@ -23,12 +71,24 @@ class Audio:
             The available voice ids can be found with `list_voices()`.
             Defaults to None.
             pause_seconds (float, optional): Duration of pause between sentences. Defaults to 0.1.
+            validate_arguments (bool): If true, validate the arguments.
         """
+        if validate_arguments:
+            arguments = validate_audio_arguments(rate=rate,
+                                                 volume=volume,
+                                                 voice=voice,
+                                                 pause_seconds=pause_seconds)
+            rate = arguments['rate']
+            volume = arguments['volume']
+            voice = arguments['voice']
+            pause_seconds = arguments['pause_seconds']
         self.engine = pyttsx3.init()
-        self._available_voices = None
-        self.rate = rate
-        self.volume = volume
-        self.voice = voice
+        if rate is not None:
+            self.engine.setProperty('rate', rate)
+        if volume is not None:
+            self.engine.setProperty('volume', volume)
+        if voice is not None:
+            self.engine.setProperty('voice', voice)
         self.pause_seconds = pause_seconds
 
     @property
@@ -38,86 +98,7 @@ class Audio:
         Returns:
             list: The available voices.
         """
-        if self._available_voices is None:
-            self._available_voices = self.engine.getProperty('voices')
-        return self._available_voices
-
-    @property
-    def rate(self) -> float:
-        """Get the speech rate (words per minutes.)
-
-        Returns:
-            float: Words per minutes.
-        """
-        return self._rate
-
-    @rate.setter
-    def rate(self, rate: float):
-        """
-        Set the speech rate (words per minute).
-
-        Args:
-            rate (float): Number of words per minute.
-            Restricted to be between 50 and 500.
-        """
-        self._rate = max(50, min(500, rate))
-        self.engine.setProperty('rate', rate)
-
-    @property
-    def volume(self) -> float:
-        """Get the volume.
-
-        Returns:
-            float: Volume.
-        """
-        return self._volume
-
-    @volume.setter
-    def volume(self, volume: float):
-        """Set the volume (0.0 to 1.0).
-
-        Args:
-            volume (float): Volume. Restricted to be between 0 and 1.
-        """
-        self._volume = max(0.0, min(1.0, volume))
-        self.engine.setProperty('volume', volume)
-
-    @property
-    def voice(self) -> str:
-        """Get the voice id.
-
-        Returns:
-            str: Voice id.
-        """
-        return self._voice
-
-    @voice.setter
-    def voice(self,
-              voice: int | str | None):
-        """Set the voice by index or ID.
-
-        Args:
-            voice (Union[int, str]): You can either provide the index (int) or the ID (str) of the voice.
-            The list of available_voices can be retrieved from the attribute available_voices.
-        """
-        if isinstance(voice, int):
-            if 0 <= voice < len(self.available_voices):
-                self._voice = self.available_voices[voice].id
-            else:
-                logger.error(f'Invalid voice index = {voice}. Keeping current voice.')
-                return
-        elif isinstance(voice, str):
-            if voice in [v.id for v in self.available_voices]:
-                self._voice = voice
-            else:
-                logger.error(f'Invalid voice ID = {voice}. Keeping current voice.')
-                return
-        elif voice is None:
-            self._voice = self.engine.getProperty('voice')
-        else:
-            logger.error(f'Unsupported datatype of voice = {type(voice)}. It must be either int or str.')
-            return
-        self.engine.setProperty('voice', self._voice)
+        return self.engine.getProperty('voices')
 
     @property
     def pause_seconds(self) -> float:
@@ -136,14 +117,14 @@ class Audio:
             value (float): Duration of pause between sentences.
         """
         if value < 0:
-            logger.error(f'pause = {value} must be non-negative. Keeping the current pause.')
+            logger.error('pause = %s must be non-negative. Keeping the current pause.', value)
             return
         self._pause_seconds = value
 
     def list_voices(self):
         """Print available voices with their index and details."""
         for i, voice in enumerate(self.available_voices):
-            logger.info(f"Index {i}: {voice.name} (ID: {voice.id})")
+            logger.info("Index %i: %s (ID: %i)", i, voice.name, voice.id)
 
     def clean_text(self, text: str) -> str:
         """Clean the text for smoother reading.
@@ -174,26 +155,6 @@ class Audio:
             self.engine.say(sentence)
             self.engine.runAndWait()
             time.sleep(self.pause_seconds)
-
-    @property
-    def settings(self) -> dict:
-        """Get the settings.
-
-        Returns:
-            dict: Settings.
-        """
-        return {
-            'rate': self.rate,
-            'volume': self.volume,
-            'voice': self.voice,
-            'pause_seconds': self.pause_seconds,
-        }
-
-    @settings.setter
-    def settings(self, values: dict):
-        for key in ['rate', 'volume', 'voice', 'pause_seconds']:
-            if key in values:
-                setattr(self, key, values[key])
 
     def stop(self):
         """Stop the current speech."""

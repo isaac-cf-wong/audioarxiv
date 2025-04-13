@@ -1,3 +1,6 @@
+"""
+A command line tool to fetch arXiv papers and read aloud.
+"""
 from __future__ import annotations
 
 import json
@@ -10,11 +13,11 @@ import configargparse
 from platformdirs import user_config_dir
 
 from .. import logger
-from ..audio import Audio
-from ..resources import Paper
+from ..audio.base import Audio, validate_audio_arguments
+from ..resources.paper import Paper, validate_paper_arguments
 
 
-def handle_exit(signum:int , frame: object): #
+def handle_exit(signum: int , frame: object):  # noqa: ARG001 # pylint: disable=unused-argument
     """Handle the exit.
 
     Args:
@@ -54,7 +57,8 @@ def main():
     parser.add_argument('--pause-seconds', type=float, help='Duration of pause between sentences in second.')
     parser.add_argument('--page-size', type=int, help='Maximum number of results fetched in a single API request.')
     parser.add_argument('--delay-seconds', type=float, help='Number of seconds to wait between API requests.')
-    parser.add_argument('--num-retries', type=int, help='Number of times to retry a failing API request before raising an Exception.')
+    parser.add_argument('--num-retries', type=int, help=('Number of times to retry a failing API request before raising'
+                                                         'an Exception.'))
     parser.add_argument('--list-voices', action='store_true', help='List the available voices.')
 
     args = parser.parse_args()
@@ -78,15 +82,14 @@ def main():
         }
     }
 
-    audio = Audio(**settings['audio'])
-
     if args.list_voices:
+        audio = Audio(**settings['audio'])
         audio.list_voices()
         return
 
-    # Update the settings.
-    # There may be some internal rules in the Audio class setting limits.
-    settings['audio'].update(audio.settings)
+    # Validate the default settings.
+    settings['audio'] = validate_audio_arguments(**settings['audio'])
+    settings['paper'] = validate_paper_arguments(**settings['paper'])
 
     if os.path.exists(config_path):
         # Load the settings from the config file.
@@ -94,7 +97,8 @@ def main():
             with open(config_path) as f:
                 loaded_settings = json.load(f)
                 settings.update(loaded_settings)
-                audio.settings = settings['audio']
+                settings['audio'] = validate_audio_arguments(**settings['audio'])
+                settings['paper'] = validate_paper_arguments(**settings['paper'])
         except Exception as e:
             logger.error('Error loading settings: %s. Using defaults.', e)
     else:
@@ -109,10 +113,13 @@ def main():
         if value is not None:
             # Compare with the existing setting
             if value != settings['audio'][prop]:
-                setattr(audio, prop, value)
+                settings['audio'][prop] = value
                 audio_settings_changed = True
     if audio_settings_changed:
-        settings['audio'].update(audio.settings)
+        settings['audio'] = validate_audio_arguments(**settings['audio'])
+
+    # The Audio instance.
+    audio = Audio(**settings['audio'])
 
     # Load the paper.
     paper = Paper(**settings['paper'])
@@ -123,10 +130,10 @@ def main():
         if value is not None:
             # Compare with the existing setting
             if value != settings['paper'][prop]:
-                setattr(paper, prop, value)
+                settings['paper'][prop] = value
                 paper_settings_changed = True
     if paper_settings_changed:
-        settings['paper'].update(paper.settings)
+        settings['paper'] = validate_paper_arguments(**settings['paper'])
 
     # Write the settings to file if there are changes.
     if audio_settings_changed or paper_settings_changed:

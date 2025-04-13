@@ -1,3 +1,6 @@
+"""
+Functions to preprocess math equations.
+"""
 from __future__ import annotations
 
 import re

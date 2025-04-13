@@ -1,19 +1,48 @@
+"""
+A class to fetch papers from arXiv.
+"""
 from __future__ import annotations
 
 import re
 import tempfile
 from datetime import datetime
-from typing import Union
 
 import arxiv
 import fitz
 
 
+def validate_paper_arguments(paper_size: int,
+                             delay_seconds: float,
+                             num_retries: int) -> dict:
+    """Validate the arguments for Paper.
+
+    Args:
+        page_size (int, optional): Maximum number of results fetched in a single API request. Smaller pages can
+        be retrieved faster, but may require more round-trips. The API's limit is 2000 results per page.
+        Defaults to 100.
+        delay_seconds (float, optional): Number of seconds to wait between API requests.
+        [arXiv's Terms of Use](https://arxiv.org/help/api/tou) ask that you "make no
+        more than one request every three seconds."
+        Defaults to 3.0.
+        num_retries (int, optional): Number of times to retry a failing API request before raising an Exception.
+        Defaults to 3.
+
+    Returns:
+        dict: paper_size, delay_seconds, num_retries
+    """
+    return {'paper_size': paper_size,
+            'delay_seconds': delay_seconds,
+            'num_retries': num_retries}
+
+
 class Paper:
+    """A class to fetch papers from arXiv.
+    """
     def __init__(self,
                  page_size: int = 100,
                  delay_seconds: float = 3.0,
-                 num_retries: int = 3):
+                 num_retries: int = 3,
+                 validate_arguments: bool = True):
         """An arXiv paper.
 
         Args:
@@ -26,109 +55,19 @@ class Paper:
             Defaults to 3.0.
             num_retries (int, optional): Number of times to retry a failing API request before raising an Exception.
             Defaults to 3.
+            validate_arguments (bool, optional): If True, validate the arguments. Defaults to True.
         """
-        self.page_size = page_size
-        self.delay_seconds = delay_seconds
-        self.num_retries = num_retries
-        self._client = None
+        if validate_arguments:
+            arguments = validate_paper_arguments(paper_size=page_size,
+                                                 delay_seconds=delay_seconds,
+                                                 num_retries=num_retries)
+            page_size = arguments['paper_size']
+            delay_seconds = arguments['delay_seconds']
+            num_retries = arguments['num_retries']
+        self._client = arxiv.Client(page_size=page_size,
+                                    delay_seconds=delay_seconds,
+                                    num_retries=num_retries)
         self._sections = []
-
-    @property
-    def page_size(self) -> int:
-        """Get the page size.
-
-        Returns:
-            int: Page size.
-        """
-        return self._page_size
-
-    @page_size.setter
-    def page_size(self, value: int):
-        """Set the page size.
-
-        Args:
-            value (int): Page size.
-
-        Raises:
-            ValueError: value has to be int.
-        """
-        if not isinstance(value, int):
-            raise ValueError(f'value = {value} ({type(value)}) has to be int.')
-        self._page_size = value
-        self._client = None
-
-    @property
-    def delay_seconds(self) -> float:
-        """Get the delay in seconds.
-
-        Returns:
-            float: Delay in seconds.
-        """
-        return self._delay_seconds
-
-    @delay_seconds.setter
-    def delay_seconds(self, value: int | float):
-        """Set the delay in seconds.
-
-        Args:
-            value (Union[int, float]): Delay in seconds.
-        """
-        if not isinstance(value, int):
-            if not isinstance(value, float):
-                raise ValueError(f'value = {value} ({type(value)}) has to be int or float.')
-        self._delay_seconds = value
-        self._client = None
-
-    @property
-    def num_retries(self) -> int:
-        """Get the number of retries.
-
-        Returns:
-            int: Number of retries.
-        """
-        return self._num_retries
-
-    @num_retries.setter
-    def num_retries(self, value: int):
-        """Set the number of retries.
-
-        Args:
-            value (int): Number of retries.
-
-        Raises:
-            ValueError: value has to be int.
-        """
-        if not isinstance(value, int):
-            raise ValueError(f'value = {value} ({type(value)}) has to be int.')
-        self._num_retries = value
-        self._client
-
-    @property
-    def settings(self) -> dict:
-        """Get the settings of the client.
-
-        Returns:
-            dict: Settings of the client.
-        """
-        return {'page_size': self.page_size,
-                'delay_seconds': self.delay_seconds,
-                'num_retries': self.num_retries}
-
-    @settings.setter
-    def settings(self, values: dict):
-        """Set the client settings.
-
-        Args:
-            values (dict): A dictionary of the settings for the client.
-
-        Raises:
-            ValueError: values has to be dict.
-        """
-        if not isinstance(values, dict):
-            raise ValueError(f'values = {values} ({type(values)}) has to be dict.')
-        for prop in ['page_size', 'delay_seconds', 'num_retries']:
-            if prop in values:
-                setattr(self, prop, values[prop])
 
     @property
     def client(self) -> arxiv.Client:
@@ -137,10 +76,6 @@ class Paper:
         Returns:
             arxiv.Client: arxiv client.
         """
-        if self._client is None:
-            self._client = arxiv.Client(page_size=self.page_size,
-                                        delay_seconds=self.delay_seconds,
-                                        num_retries=self.num_retries)
         return self._client
 
     @property
@@ -189,6 +124,11 @@ class Paper:
         return self.paper.updated
 
     def search_by_arxiv_id(self, arxiv_id: str):
+        """Search paper by arXiv ID.
+
+        Args:
+            arxiv_id (str): arXiv ID.
+        """
         self.paper = next(self.client.results(arxiv.Search(id_list=[arxiv_id])))
 
     def download_pdf(self,
@@ -207,6 +147,11 @@ class Paper:
 
     @property
     def sections(self) -> list:
+        """Get the sections of the paper.
+
+        Returns:
+            list: A list of sections. Each section is a dict with the header as the key and the content as the value.
+        """
         if len(self._sections) == 0:
             with tempfile.NamedTemporaryFile() as tmp:
                 filename = tmp.name

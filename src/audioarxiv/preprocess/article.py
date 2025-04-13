@@ -1,3 +1,6 @@
+"""
+Functions to preprocess articles.
+"""
 from __future__ import annotations
 
 import nltk

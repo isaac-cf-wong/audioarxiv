@@ -17,7 +17,8 @@ def get_version_information() -> str:
     Returns:
         str: Version information.
     """
-    from audioarxiv import __version__
+    from audioarxiv import \
+        __version__  # noqa: F401  # pylint: disable=import-outside-toplevel
     return __version__
 
 
