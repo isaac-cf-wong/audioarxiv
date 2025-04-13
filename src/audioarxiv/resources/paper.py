@@ -68,6 +68,7 @@ class Paper:
                                     delay_seconds=delay_seconds,
                                     num_retries=num_retries)
         self._sections = []
+        self.paper = None
 
     @property
     def client(self) -> arxiv.Client:

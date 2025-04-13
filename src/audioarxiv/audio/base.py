@@ -13,10 +13,7 @@ from ..preprocess import get_sentences
 logger = logging.getLogger('audioarxiv')
 
 
-def validate_audio_arguments(rate: float,
-                             volume: float,
-                             voice: str | None,
-                             pause_seconds: float) -> dict:
+def validate_audio_arguments(rate: float, volume: float, voice: str | None, pause_seconds: float) -> dict:
     """Validate the arguments for Audio.
 
     Args:
@@ -47,7 +44,7 @@ def validate_audio_arguments(rate: float,
         logger.error('Unsupported datatype of voice = %s. It must be either int or str.', type(voice))
     if pause_seconds < 0:
         pause_seconds = None
-        logger.error('pause = %s must be non-negative. Keeping the current pause.', value)
+        logger.error('pause = %s must be non-negative. Keeping the current pause.', pause_seconds)
     return {'rate': rate,
             'volume': volume,
             'voice': voice,
@@ -57,11 +54,7 @@ def validate_audio_arguments(rate: float,
 class Audio:
     """A class to generate audio from text.
     """
-    def __init__(self,
-                 rate: float = 140,
-                 volume: float = 0.9,
-                 voice: str | None = None,
-                 pause_seconds: float = 0.1,
+    def __init__(self, rate: float = 140, volume: float = 0.9, voice: str | None = None, pause_seconds: float = 0.1,
                  validate_arguments: bool = True):
         """A class to configure the audio.
 
@@ -148,7 +141,7 @@ class Audio:
             article (str): Article.
         """
         if not isinstance(article, str):
-            logger.warning(f'article = {article} is not str. Skipping.')
+            logger.warning('article = %s is not str. Skipping.', article)
             return
         cleaned_text = self.clean_text(article)
         sentences = get_sentences(cleaned_text)

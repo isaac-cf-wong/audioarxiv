@@ -38,7 +38,7 @@ def save_settings(config_path: str, settings: dict):
         settings (dict): Dictionary of the settings.
     """
     try:
-        with open(config_path, 'w') as f:
+        with open(config_path, 'w', encoding="utf-8") as f:
             json.dump(settings, f, indent=4)
     except Exception as e:
         logger.error('Error saving settings: %s', e)
@@ -77,7 +77,7 @@ def initialize_configuration(args: configargparse.Namespace) -> tuple:
     if os.path.exists(config_path):
         # Load the settings from the config file.
         try:
-            with open(config_path) as f:
+            with open(config_path, encoding="utf-8") as f:
                 loaded_settings = json.load(f)
                 settings.update(loaded_settings)
                 settings['audio'] = validate_audio_arguments(**settings['audio'])
@@ -85,7 +85,7 @@ def initialize_configuration(args: configargparse.Namespace) -> tuple:
         except Exception as e:
             logger.error('Error loading settings: %s. Using defaults.', e)
     else:
-        logger.info(f'Saving default settings to {config_path}...')
+        logger.info('Saving default settings to %s...', config_path)
         settings['audio'] = validate_audio_arguments(**settings['audio'])
         settings['paper'] = validate_paper_arguments(**settings['paper'])
         save_settings(config_path, settings)
@@ -161,7 +161,7 @@ def main():
     # Search the paper.
     if args.id is not None:
         # Print the information
-        logger.info(f'Configuration file: {config_path}')
+        logger.info('Configuration file: %s', config_path)
         logger.info('Audio settings')
         for key, value in settings['audio'].items():
             logger.info('%s: %s', key, value)

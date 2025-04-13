@@ -39,11 +39,11 @@ def get_version_information() -> str:
     return __version__
 
 
-def setup_logger(logger: logging.Logger, outdir='.', label=None, log_level='INFO', print_version=False):
+def setup_logger(logger_: logging.Logger, outdir='.', label=None, log_level='INFO', print_version=False):
     """ Setup logging output: call at the start of the script to use
 
     Args:
-        logger (logging.Logger): The logger instance to be configured.
+        logger_ (logging.Logger): The logger instance to be configured.
         outdir (str): If supplied, write the logging output to outdir/label.log
         label (str): If supplied, write the logging output to outdir/label.log
         log_level (str, optional): ['debug', 'info', 'warning']
@@ -59,17 +59,17 @@ def setup_logger(logger: logging.Logger, outdir='.', label=None, log_level='INFO
     else:
         level = int(log_level)
 
-    logger.propagate = False
-    logger.setLevel(level)
+    logger_.propagate = False
+    logger_.setLevel(level)
 
-    if not any(isinstance(h, logging.StreamHandler) for h in logger.handlers):
+    if not any(isinstance(h, logging.StreamHandler) for h in logger_.handlers):
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(logging.Formatter(
             '%(asctime)s %(name)s %(levelname)-8s: %(message)s', datefmt='%H:%M'))
         stream_handler.setLevel(level)
-        logger.addHandler(stream_handler)
+        logger_.addHandler(stream_handler)
 
-    if not any(isinstance(h, logging.FileHandler) for h in logger.handlers):
+    if not any(isinstance(h, logging.FileHandler) for h in logger_.handlers):
         if label:
             Path(outdir).mkdir(parents=True, exist_ok=True)
             log_file = f'{outdir}/{label}.log'
@@ -78,14 +78,14 @@ def setup_logger(logger: logging.Logger, outdir='.', label=None, log_level='INFO
                 '%(asctime)s %(levelname)-8s: %(message)s', datefmt='%H:%M'))
 
             file_handler.setLevel(level)
-            logger.addHandler(file_handler)
+            logger_.addHandler(file_handler)
 
-    for handler in logger.handlers:
+    for handler in logger_.handlers:
         handler.setLevel(level)
 
     if print_version:
         version = get_version_information()
-        logger.info('Running audioarxiv version: %s', version)
+        logger_.info('Running audioarxiv version: %s', version)
 
 
 def loaded_modules_dict() -> dict:
@@ -167,5 +167,6 @@ __all__ = [
     'audio',
     'preprocess',
     'resources',
+    'logger',
     '__version__'
 ]
