@@ -4,6 +4,7 @@ A command line tool to fetch arXiv papers and read aloud.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import signal
 import sys
@@ -14,7 +15,8 @@ from platformdirs import user_config_dir
 
 from ..audio.base import Audio, validate_audio_arguments
 from ..resources.paper import Paper, validate_paper_arguments
-from ..utils import logger
+
+logger = logging.getLogger('audioarxiv')
 
 
 def handle_exit(signum: int , frame: object):  # noqa: ARG001 # pylint: disable=unused-argument

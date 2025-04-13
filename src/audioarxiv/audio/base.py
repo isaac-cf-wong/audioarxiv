@@ -3,12 +3,14 @@ A base class for audio.
 """
 from __future__ import annotations
 
+import logging
 import time
 
 import pyttsx3
 
 from ..preprocess import get_sentences
-from ..utils import logger
+
+logger = logging.getLogger('audioarxiv')
 
 
 def validate_audio_arguments(rate: float,
