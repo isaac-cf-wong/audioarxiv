@@ -43,7 +43,7 @@ def validate_audio_arguments(rate: float, volume: float, voice: str | None, paus
     elif voice is not None:
         logger.error('Unsupported datatype of voice = %s. It must be either int or str.', type(voice))
     if pause_seconds < 0:
-        pause_seconds = None
+        pause_seconds = 0.1
         logger.error('pause = %s must be non-negative. Keeping the current pause.', pause_seconds)
     return {'rate': rate,
             'volume': volume,
@@ -65,7 +65,7 @@ class Audio:
             The available voice ids can be found with `list_voices()`.
             Defaults to None.
             pause_seconds (float, optional): Duration of pause between sentences. Defaults to 0.1.
-            validate_arguments (bool): If true, validate the arguments.
+            validate_arguments (bool): If True, validate the arguments.
         """
         if validate_arguments:
             arguments = validate_audio_arguments(rate=rate,
@@ -118,12 +118,12 @@ class Audio:
     def list_voices(self):
         """Print available voices with their index and details."""
         for i, voice in enumerate(self.available_voices):
-            logger.info("Index %i: %s (ID: %i)", i, voice.name, voice.id)
+            logger.info("Index %s: %s (ID: %s)", i, voice.name, voice.id)
 
     def clean_text(self, text: str) -> str:
         """Clean the text for smoother reading.
 
-        '\n' is replaced with a white space.
+        '\\n' is replaced with a white space.
 
         Args:
             text (str): Text.
@@ -149,6 +149,19 @@ class Audio:
             self.engine.say(sentence)
             self.engine.runAndWait()
             time.sleep(self.pause_seconds)
+
+    def save_article(self,
+                     filename: str,
+                     article: str):
+        """Save the article to an audio file.
+
+        Args:
+            filename (str): File name.
+            article (str): Article.
+        """
+        cleaned_text = self.clean_text(article)
+        self.engine.save_to_file(cleaned_text, filename)
+        self.engine.runAndWait()
 
     def stop(self):
         """Stop the current speech."""

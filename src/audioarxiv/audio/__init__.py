@@ -1,9 +1,5 @@
 """
-This subpackage
-
-Submodules:
------------
-- base: An Audio class to render the text into audio, using pyttsx3 as the backend.
+Handles text-to-speech conversion using various engines to read research papers aloud.
 """
 from __future__ import annotations
 

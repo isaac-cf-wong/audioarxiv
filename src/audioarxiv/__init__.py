@@ -1,19 +1,13 @@
 """
-audioarxiv: A python package to let you fetch the research papers from arXiv and read them aloud.
+audioarxiv
+==========
 
-This package provides tools to:
-- Fetch research papers from arXiv
-- Preprocess the articles for better audio rendering
+audioarxiv is a Python package designed to make staying up to date with the latest research more accessible and convenient.
+It allows you to fetch research papers directly from `arXiv <https://arxiv.org>`_ and converts them into speech,
+so you can listen to them on the go—whether you're commuting, working out, or simply prefer auditory learning.
+With support for customizable text-to-speech settings and a streamlined interface, audioarxiv offers researchers, students, and enthusiasts a hands-free way to engage with scientific literature.
 
-Submodules:
------------
-- audio: Core audio generation and playback utilities
-- preprocess: Text and paper preprocessing functions
-- resources: Paper models and utilities for paper handling
-
-Usage example:
---------------
-$ audioarxiv --id <arxiv-id>
+**Please note**: the package is still in its early stages of development, and some features may be limited or not fully mature yet.
 """
 from __future__ import annotations
 

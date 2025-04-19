@@ -1,10 +1,5 @@
 """
-This subpackage provides functions to preprocess articles for better audio rendering.
-
-Submodules:
------------
-- article: Text and preprocessing functions
-- math_equation: Math equation preprocessing functions
+Processes and cleans the extracted text from papers, including sentence segmentation, symbol handling, and formatting for better audio output.
 """
 from __future__ import annotations
 

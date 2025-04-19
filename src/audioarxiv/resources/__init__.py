@@ -1,9 +1,5 @@
 """
-This subpackage provides functions to fetch research articles from arXiv.
-
-Submodules:
------------
-- paper: A Paper class to provide a user-friendly interface to fetch research articles from arXiv.
+Fetches research papers and metadata from arXiv using the arXiv API.
 """
 from __future__ import annotations
 

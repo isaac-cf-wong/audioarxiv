@@ -174,9 +174,21 @@ def main():
         paper.search_by_arxiv_id(arxiv_id=args.id)
         # Get the sections
         sections = paper.sections
-        for section in sections:
-            audio.read_article(section['header'])
-            time.sleep(1)
-            for content in section['content']:
-                audio.read_article(content)
+        if args.output is None:
+            for section in sections:
+                audio.read_article(section['header'])
                 time.sleep(1)
+                for content in section['content']:
+                    audio.read_article(content)
+                    time.sleep(1)
+        else:
+            article = []
+            for section in sections:
+                if section['header'] is not None:
+                    article.append(section['header'])
+                if section['content'] is not None:
+                    article += section['content']
+            article = " ".join(article)
+            logger.info('Saving audio...')
+            audio.save_article(filename=args.output, article=article)
+            logger.info('Audio is saved to %s.', args.output)
