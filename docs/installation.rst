@@ -28,6 +28,7 @@ audioarxiv has a few dependencies that will be installed automatically with pip.
 - pymupdf: for parsing and extracting text from PDFs
 - sympy: for handling mathematical expressions and symbols
 - nltk: for natural language processing tasks like sentence tokenization
+- pandas: for providing a data structure for handling tabular data
 
 Make sure you have an internet connection during installation to download all dependencies.
 
