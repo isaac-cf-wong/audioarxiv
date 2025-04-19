@@ -29,6 +29,7 @@ audioarxiv has a few dependencies that will be installed automatically with pip.
 - sympy: for handling mathematical expressions and symbols
 - nltk: for natural language processing tasks like sentence tokenization
 - pandas: for providing a data structure for handling tabular data
+- platformdirs: for finding the right location to store configuration varies per platform.
 
 Make sure you have an internet connection during installation to download all dependencies.
 

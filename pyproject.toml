@@ -30,6 +30,7 @@ dependencies = [
     "sympy",
     "nltk",
     "pandas",
+    'platformdirs',
 ]
 
 [project.optional-dependencies]
