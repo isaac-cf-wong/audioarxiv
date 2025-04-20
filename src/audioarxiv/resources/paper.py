@@ -21,14 +21,14 @@ def validate_paper_arguments(page_size: int,
 
     Args:
         page_size (int, optional): Maximum number of results fetched in a single API request. Smaller pages can
-        be retrieved faster, but may require more round-trips. The API's limit is 2000 results per page.
-        Defaults to 100.
+            be retrieved faster, but may require more round-trips. The API's limit is 2000 results per page.
+            Defaults to 100.
         delay_seconds (float, optional): Number of seconds to wait between API requests.
-        [arXiv's Terms of Use](https://arxiv.org/help/api/tou) ask that you "make no
-        more than one request every three seconds."
-        Defaults to 3.0.
+            `arXiv's Terms of Use <https://arxiv.org/help/api/tou>`_ ask that you "make no
+            more than one request every three seconds."
+            Defaults to 3.0.
         num_retries (int, optional): Number of times to retry a failing API request before raising an Exception.
-        Defaults to 3.
+            Defaults to 3.
 
     Returns:
         dict: paper_size, delay_seconds, num_retries
@@ -47,14 +47,14 @@ class Paper:
 
         Args:
             page_size (int, optional): Maximum number of results fetched in a single API request. Smaller pages can
-            be retrieved faster, but may require more round-trips. The API's limit is 2000 results per page.
-            Defaults to 100.
+                be retrieved faster, but may require more round-trips. The API's limit is 2000 results per page.
+                Defaults to 100.
             delay_seconds (float, optional): Number of seconds to wait between API requests.
-            [arXiv's Terms of Use](https://arxiv.org/help/api/tou) ask that you "make no
-            more than one request every three seconds."
-            Defaults to 3.0.
+                `arXiv's Terms of Use <https://arxiv.org/help/api/tou>`_ ask that you "make no
+                more than one request every three seconds."
+                Defaults to 3.0.
             num_retries (int, optional): Number of times to retry a failing API request before raising an Exception.
-            Defaults to 3.
+                Defaults to 3.
             validate_arguments (bool, optional): If True, validate the arguments. Defaults to True.
         """
         if validate_arguments:
@@ -95,9 +95,6 @@ class Paper:
     def abstract(self) -> str | None:
         """Abstract.
 
-        Raises:
-            ValueError: paper is None.
-
         Returns:
             str | None: Abstract. None if paper is None.
         """
@@ -122,9 +119,6 @@ class Paper:
     def published(self) -> datetime | None:
         """Published date.
 
-        Raises:
-            ValueError: paper is None.
-
         Returns:
             datetime: Published date. None if paper is None.
         """
@@ -136,9 +130,6 @@ class Paper:
     @property
     def updated(self) -> datetime | None:
         """Updated date.
-
-        Raises:
-            ValueError: paper is None.
 
         Returns:
             datetime | None: Updated date. None if paper is None.

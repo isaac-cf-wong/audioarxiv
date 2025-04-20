@@ -10,7 +10,14 @@ from sympy.parsing.sympy_parser import parse_expr
 
 
 def process_math_equations(text: str) -> str:
-    """Detects LaTeX-style math symbols and converts them to a readable format."""
+    """Detects LaTeX-style math symbols and converts them to a readable format.
+
+    Args:
+        text (str): Text.
+
+    Returns:
+        str: Text with the processed math equations.
+    """
 
     def replace_math(match: re.Match) -> str:
         raw_expr = match.group(1)

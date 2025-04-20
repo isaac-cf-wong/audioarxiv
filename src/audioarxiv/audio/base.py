@@ -20,8 +20,8 @@ def validate_audio_arguments(rate: float, volume: float, voice: int | str | None
         rate (float): Number of words per minute.
         volume (float): Volume.
         voice (int | str | None): If it is int, it is interpreted as the index of the available voices.
-        If it is str, it is interpreted as the ID of the voice.
-        The available voice ids can be found with `list_voices()`.
+            If it is str, it is interpreted as the ID of the voice.
+            The available voice ids can be found with `list_voices()`.
         pause_seconds (float): Duration of pause between sentences.
 
     Returns:
@@ -66,8 +66,8 @@ class Audio:
             rate (float, optional): Number of words per minute. Defaults to 140.
             volume (float, optional): Volume. Defaults to 0.9.
             voice (Optional[str], optional): Voice id.
-            The available voice ids can be found with `list_voices()`.
-            Defaults to None.
+                The available voice ids can be found with `list_voices()`.
+                Defaults to None.
             pause_seconds (float, optional): Duration of pause between sentences. Defaults to 0.1.
             validate_arguments (bool): If True, validate the arguments.
         """

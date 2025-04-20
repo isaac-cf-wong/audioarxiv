@@ -5,6 +5,9 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/isaac-cf-wong/audioarxiv/CI.yml?branch=main)](https://github.com/isaac-cf-wong/audioarxiv/actions)
 [![Python Version](https://img.shields.io/pypi/pyversions/audioarxiv)](https://pypi.org/project/audioarxiv/)
 [![Security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+[![Documentation Status](https://img.shields.io/badge/documentation-online-brightgreen)](https://isaac-cf-wong.github.io/audioarxiv/)
+
+📚 **Documentation**: [https://isaac-cf-wong.github.io/audioarxiv/](https://isaac-cf-wong.github.io/audioarxiv/)
 
 **Turn arXiv papers into audio.**
 `audioarxiv` lets you fetch the research papers from arXiv and read them aloud.
