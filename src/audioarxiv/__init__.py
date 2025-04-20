@@ -111,11 +111,11 @@ def env_package_list(as_dataframe: bool = False) -> list | DataFrame:
 
     Returns:
     Union[list, DataFrame]:
-    If ``as_dataframe=False`` is given, the output is a `list` of `dict`,
-    one for each package, at least with ``'name'`` and ``'version'`` keys
-    (more if `conda` is used).
-    If ``as_dataframe=True`` is given, the output is a `DataFrame`
-    created from the `list` of `dicts`.
+        If ``as_dataframe=False`` is given, the output is a `list` of `dict`,
+        one for each package, at least with ``'name'`` and ``'version'`` keys
+        (more if `conda` is used).
+        If ``as_dataframe=True`` is given, the output is a `DataFrame`
+        created from the `list` of `dicts`.
     """
     prefix = sys.prefix
     pkgs = []

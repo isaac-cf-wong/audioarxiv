@@ -57,7 +57,7 @@ def initialize_configuration(args: configargparse.Namespace) -> tuple:
     os.makedirs(config_dir, exist_ok=True)
     config_file = 'config.json'
     config_path = os.path.join(config_dir, config_file)
-
+    print('debug', config_path)
     # Default settings.
     settings = {
         'audio': {
