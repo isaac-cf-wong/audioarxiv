@@ -3,6 +3,7 @@ A class to fetch papers from arXiv.
 """
 from __future__ import annotations
 
+import logging
 import re
 import tempfile
 from datetime import datetime
@@ -10,7 +11,7 @@ from datetime import datetime
 import arxiv
 import fitz
 
-from .. import logger
+logger = logging.getLogger('audioarxiv')
 
 
 def validate_paper_arguments(page_size: int,
