@@ -7,6 +7,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/audioarxiv)](https://pypi.org/project/audioarxiv/)
 [![Security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 [![Documentation Status](https://img.shields.io/badge/documentation-online-brightgreen)](https://isaac-cf-wong.github.io/audioarxiv/)
+[![DOI](https://zenodo.org/badge/956387048.svg)](https://doi.org/10.5281/zenodo.15251111)
 
 📚 **Documentation**: [https://isaac-cf-wong.github.io/audioarxiv/](https://isaac-cf-wong.github.io/audioarxiv/)
 
