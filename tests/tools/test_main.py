@@ -43,6 +43,7 @@ def test_main_with_id_and_output(mock_parse_args, mock_Paper, mock_Audio):
     mock_audio.save_article.assert_called_once()
     assert mock_audio.save_article.call_args[1]["filename"] == "output.mp3"
 
+
 @patch("audioarxiv.tools.main.Audio")
 @patch("audioarxiv.tools.main.configargparse.ArgParser.parse_args")
 def test_main_list_voices(mock_parse_args, mock_Audio):
@@ -56,6 +57,7 @@ def test_main_list_voices(mock_parse_args, mock_Audio):
 
     mock_audio.list_voices.assert_called_once()
 
+
 @patch("audioarxiv.tools.main.validate_audio_arguments")
 @patch("audioarxiv.tools.main.validate_paper_arguments")
 def test_initialize_configuration_defaults(mock_validate_paper, mock_validate_audio):
@@ -66,13 +68,14 @@ def test_initialize_configuration_defaults(mock_validate_paper, mock_validate_au
     for attr in ['rate', 'volume', 'voice', 'pause_seconds', 'page_size', 'delay_seconds', 'num_retries']:
         setattr(dummy_args, attr, None)
 
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        config_path = os.path.join(tmpdirname, 'config.json')
+    with tempfile.TemporaryDirectory() as tmp_dir_name:
+        config_path = os.path.join(tmp_dir_name, 'config.json')  # noqa: F841 # pylint: disable=unused-variable
 
-        with patch("audioarxiv.tools.main.user_config_dir", return_value=tmpdirname):
+        with patch("audioarxiv.tools.main.user_config_dir", return_value=tmp_dir_name):
             settings, path = initialize_configuration(dummy_args)
             assert settings['audio']['rate'] == 140
             assert os.path.exists(path)
+
 
 @patch("builtins.open", new_callable=mock.mock_open)
 def test_save_settings(mock_open_func):
@@ -81,6 +84,7 @@ def test_save_settings(mock_open_func):
     mock_open_func.assert_called_once_with("config.json", 'w', encoding='utf-8')
     handle = mock_open_func()
     handle.write.assert_called()
+
 
 @patch("audioarxiv.tools.main.sys.exit")
 def test_handle_exit(mock_exit):

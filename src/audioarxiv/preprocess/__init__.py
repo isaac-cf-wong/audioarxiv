@@ -1,5 +1,6 @@
 """
-Processes and cleans the extracted text from papers, including sentence segmentation, symbol handling, and formatting for better audio output.
+Processes and cleans the extracted text from papers,
+including sentence segmentation, symbol handling, and formatting for better audio output.
 """
 from __future__ import annotations
 

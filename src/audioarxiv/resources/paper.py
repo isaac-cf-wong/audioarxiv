@@ -10,6 +10,8 @@ from datetime import datetime
 import arxiv
 import fitz
 
+from .. import logger
+
 
 def validate_paper_arguments(page_size: int,
                              delay_seconds: float,
@@ -80,49 +82,73 @@ class Paper:
         return self._client
 
     @property
-    def title(self) -> str:
+    def title(self) -> str | None:
         """Title of the paper.
 
         Returns:
-            str: Title of the paper.
+            str | None: Title of the paper. None if paper is None.
         """
-        return self.paper.title
+        if self.paper is not None:
+            return self.paper.title
+        else:
+            return None
 
     @property
-    def abstract(self) -> str:
+    def abstract(self) -> str | None:
         """Abstract.
 
+        Raises:
+            ValueError: paper is None.
+
         Returns:
-            str: Abstract.
+            str | None: Abstract. None if paper is None.
         """
-        return self.paper.summary
+        if self.paper is not None:
+            return self.paper.summary
+        else:
+            return None
 
     @property
-    def authors(self) -> list:
+    def authors(self) -> list | None:
         """List of authors.
 
         Returns:
-            list: List of authors.
+            list | None: List of authors. None if paper is None.
         """
-        return [author.name for author in self.paper.authors]
+        if self.paper is not None:
+            return [author.name for author in self.paper.authors]
+        else:
+            return None
 
     @property
     def published(self) -> datetime:
         """Published date.
 
+        Raises:
+            ValueError: paper is None.
+
         Returns:
             datetime: Published date.
         """
-        return self.paper.published
+        if self.paper is not None:
+            return self.paper.published
+        else:
+            raise ValueError('paper is None.')
 
     @property
     def updated(self) -> datetime:
         """Updated date.
 
+        Raises:
+            ValueError: paper is None.
+
         Returns:
             datetime: Updated date.
         """
-        return self.paper.updated
+        if self.paper is not None:
+            return self.paper.updated
+        else:
+            raise ValueError('paper is None.')
 
     def search_by_arxiv_id(self, arxiv_id: str):
         """Search paper by arXiv ID.
@@ -134,7 +160,7 @@ class Paper:
 
     def download_pdf(self,
                      dirpath: str = './',
-                     filename: str = '') -> str:
+                     filename: str = '') -> str | None:
         """Download the PDF.
 
         Args:
@@ -142,9 +168,13 @@ class Paper:
             filename (str, optional): Name of the file. Defaults to ''.
 
         Returns:
-            str: Path of the output PDF.
+            str | None: Path of the output PDF. None if paper is None.
         """
-        return self.paper.download_pdf(dirpath=dirpath, filename=filename)
+        if self.paper is not None:
+            return self.paper.download_pdf(dirpath=dirpath, filename=filename)
+        else:
+            logger.error('Paper is None. Cannot download PDF.')
+            return None
 
     @property
     def sections(self) -> list:
@@ -163,7 +193,7 @@ class Paper:
                 current_section = {"header": None, "content": []}
 
                 for page in doc:
-                    blocks = page.get_text("blocks")  # Extract text blocks
+                    blocks = page.get_text("blocks")  # Extract text blocks # type: ignore[attr-defined]
 
                     for block in blocks:
                         text = block[4].strip()

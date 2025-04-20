@@ -13,13 +13,14 @@ from ..preprocess import get_sentences
 logger = logging.getLogger('audioarxiv')
 
 
-def validate_audio_arguments(rate: float, volume: float, voice: str | None, pause_seconds: float) -> dict:
+def validate_audio_arguments(rate: float, volume: float, voice: int | str | None, pause_seconds: float) -> dict:
     """Validate the arguments for Audio.
 
     Args:
         rate (float): Number of words per minute.
         volume (float): Volume.
-        voice (Optional[str]): Voice id.
+        voice (int | str | None): If it is int, it is interpreted as the index of the available voices.
+        If it is str, it is interpreted as the ID of the voice.
         The available voice ids can be found with `list_voices()`.
         pause_seconds (float): Duration of pause between sentences.
 

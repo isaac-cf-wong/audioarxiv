@@ -2,12 +2,15 @@
 audioarxiv
 ==========
 
-audioarxiv is a Python package designed to make staying up to date with the latest research more accessible and convenient.
+audioarxiv is a Python package designed to make staying up to date with the latest research more accessible and
+convenient.
 It allows you to fetch research papers directly from `arXiv <https://arxiv.org>`_ and converts them into speech,
 so you can listen to them on the go—whether you're commuting, working out, or simply prefer auditory learning.
-With support for customizable text-to-speech settings and a streamlined interface, audioarxiv offers researchers, students, and enthusiasts a hands-free way to engage with scientific literature.
+With support for customizable text-to-speech settings and a streamlined interface, audioarxiv offers researchers,
+students, and enthusiasts a hands-free way to engage with scientific literature.
 
-**Please note**: the package is still in its early stages of development, and some features may be limited or not fully mature yet.
+**Please note**: the package is still in its early stages of development,
+and some features may be limited or not fully mature yet.
 """
 from __future__ import annotations
 

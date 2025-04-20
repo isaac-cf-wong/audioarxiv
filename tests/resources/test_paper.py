@@ -62,5 +62,5 @@ def test_search_by_arxiv_id_and_properties(mock_client_class, mock_paper_object)
 
 @patch("audioarxiv.resources.paper.arxiv.Client")
 def test_init_without_validation(mock_client_class):
-    paper = Paper(validate_arguments=False)
+    paper = Paper(validate_arguments=False)  # noqa: F841 # pylint: disable=unused-variable
     mock_client_class.assert_called_once()

@@ -19,14 +19,14 @@ from ..resources.paper import Paper, validate_paper_arguments
 logger = logging.getLogger('audioarxiv')
 
 
-def handle_exit(signum: int , frame: object):  # noqa: ARG001 # pylint: disable=unused-argument
+def handle_exit(sig_num: int , frame: object):  # noqa: ARG001 # pylint: disable=unused-argument
     """Handle the exit.
 
     Args:
-        signum (int): Signal number.
+        sig_num (int): Signal number.
         frame (object): A frame object.
     """
-    logger.info("\nReceived signal %s. Exiting cleanly.", signum)
+    logger.info("\nReceived signal %s. Exiting cleanly.", sig_num)
     sys.exit(0)
 
 

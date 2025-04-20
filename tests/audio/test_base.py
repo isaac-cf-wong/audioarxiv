@@ -18,7 +18,7 @@ def mock_pyttsx3_init(monkeypatch):
 
 def test_validate_audio_arguments_valid(mock_pyttsx3_init):
     # Mocking valid parameters
-    mock_engine = mock_pyttsx3_init()
+    mock_engine = mock_pyttsx3_init()  # noqa: F841
     result = validate_audio_arguments(150, 0.8, "voice_id", 0.5)
     assert result['rate'] == 150
     assert result['volume'] == 0.8
@@ -27,25 +27,25 @@ def test_validate_audio_arguments_valid(mock_pyttsx3_init):
 
 
 def test_validate_audio_arguments_invalid_voice_index(mock_pyttsx3_init):
-    mock_engine = mock_pyttsx3_init()
-    result = validate_audio_arguments(150, 0.8, 99, 0.5)  # Invalid voice index
+    mock_engine = mock_pyttsx3_init()  # noqa: F841
+    result = validate_audio_arguments(150, 0.8, 99, 0.5)  # Invalid voice index  # noqa: F841
     assert result['voice'] is None  # Voice should be set to None for invalid index
 
 
 def test_validate_audio_arguments_invalid_voice_id(mock_pyttsx3_init):
-    mock_engine = mock_pyttsx3_init()
+    mock_engine = mock_pyttsx3_init()  # noqa: F841
     result = validate_audio_arguments(150, 0.8, "invalid_voice_id", 0.5)  # Invalid voice ID
     assert result['voice'] is None  # Voice should be set to None for invalid voice ID
 
 
 def test_validate_audio_arguments_invalid_voice_type(mock_pyttsx3_init):
-    mock_engine = mock_pyttsx3_init()
+    mock_engine = mock_pyttsx3_init()  # noqa: F841
     result = validate_audio_arguments(150, 0.8, 12345, 0.5)  # Invalid voice type
     assert result['voice'] is None  # Voice should be set to None for invalid type
 
 
 def test_validate_audio_arguments_invalid_pause_seconds(mock_pyttsx3_init):
-    mock_engine = mock_pyttsx3_init()
+    mock_engine = mock_pyttsx3_init()  # noqa: F841
     result = validate_audio_arguments(150, 0.8, "voice_id", -1)  # Invalid pause seconds (negative)
     assert result['pause_seconds'] == 0.1  # Pause seconds should be set to the default value 0.1
 

@@ -1,0 +1,33 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "ignorePaths": [
+        ".github/*",
+        "pyproject.toml",
+        "docs/conf.py",
+        "docs/requirements.txt",
+        ".pypirc",
+    ],
+    "words": [
+        "audioarxiv",
+        "automodule",
+        "autosummary",
+        "toctree",
+        "genindex",
+        "modindex",
+        "pyproject",
+        "pypirc",
+        "configargparse",
+        "pyttsx",
+        "pymupdf",
+        "sympy",
+        "nltk",
+        "platformdirs",
+        "levelname",
+        "vdict",
+        "recarray",
+        "punkt",
+        "srepr",
+        "fitz"
+    ]
+}
