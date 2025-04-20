@@ -57,9 +57,9 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/microsoft/python-package-template/tree/main#readme"
-Source = "https://github.com/microsoft/python-package-template"
-Tracker = "https://github.com/microsoft/python-package-template/issues"
+Documentation = "https://isaac-cf-wong.github.io/audioarxiv"
+Source = "https://github.com/isaac-cf-wong/audioarxiv"
+Tracker = "https://github.com/isaac-cf-wong/audioarxiv/issues"
 
 [project.scripts]
 audioarxiv = "audioarxiv.tools.main:main"
