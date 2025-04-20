@@ -3,6 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/audioarxiv.svg)](https://pypi.org/project/audioarxiv/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build](https://img.shields.io/github/actions/workflow/status/isaac-cf-wong/audioarxiv/CI.yml?branch=main)](https://github.com/isaac-cf-wong/audioarxiv/actions)
+[![codecov](https://codecov.io/gh/isaac-cf-wong/audioarxiv/branch/main/graph/badge.svg)](https://codecov.io/gh/isaac-cf-wong/audioarxiv)
 [![Python Version](https://img.shields.io/pypi/pyversions/audioarxiv)](https://pypi.org/project/audioarxiv/)
 [![Security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 [![Documentation Status](https://img.shields.io/badge/documentation-online-brightgreen)](https://isaac-cf-wong.github.io/audioarxiv/)
