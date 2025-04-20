@@ -51,7 +51,8 @@ def test_validate_audio_arguments_invalid_pause_seconds(mock_pyttsx3_init):
 
 
 @pytest.fixture
-def audio_instance():
+def audio_instance(mock_pyttsx3_init):
+    mock_engine = mock_pyttsx3_init()  # noqa: F841
     return Audio(rate=150, volume=0.8, voice="voice_id", pause_seconds=0.5, validate_arguments=True)
 
 

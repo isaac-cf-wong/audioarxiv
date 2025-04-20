@@ -31,7 +31,7 @@ pip install audioarxiv
 Install from [Conda](https://anaconda.org/conda-forge/audioarxiv):
 
 ```bash
-conda install -c conda-forge arxivaudio
+conda install -c conda-forge audioarxiv
 ```
 
 ---
