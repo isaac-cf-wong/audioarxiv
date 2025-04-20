@@ -7,7 +7,7 @@ name =  "audioarxiv"
 authors = [
     {name = "Isaac C. F. Wong", email = "isaac.cf.wong@gmail.com"},
 ]
-description = "Sample Python Project for creating a new Python Module"
+description = "Turn arXiv papers into audio. audioarxiv lets you fetch the research papers from arXiv and read them aloud."
 readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
