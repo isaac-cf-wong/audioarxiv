@@ -3,19 +3,9 @@ Installation
 
 To install audioarxiv, you need Python 3.9 or higher. You can install the package using pip:
 
-.. tabs::
+.. code-block:: console
 
-   .. tab:: Conda
-
-      .. code-block:: console
-
-          $ conda install -c conda-forge audioarxiv
-
-   .. tab:: Pip
-
-      .. code-block:: console
-
-          $ pip install audioarxiv
+      $ pip install audioarxiv
 
 Requirements
 ------------
