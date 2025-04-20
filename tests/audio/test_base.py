@@ -265,7 +265,7 @@ def test_rate_handling(mock_init, rate):
 def test_volume_handling(mock_init, volume):
     mock_engine = MagicMock()
     mock_init.return_value = mock_engine
-    audio = Audio(rate=140, volume=volume, validate_arguments=False) # noqa: F841 # pylint: disable=unused-variable
+    audio = Audio(rate=140, volume=volume, validate_arguments=False)  # noqa: F841 # pylint: disable=unused-variable
     if volume is not None:
         mock_engine.setProperty.assert_any_call('volume', volume)
     else:
