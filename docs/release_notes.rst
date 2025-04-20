@@ -8,6 +8,12 @@ This page summarizes the key updates and changes in each release.
    For the full history and additional context, visit the
    `GitHub Releases <https://github.com/isaac-cf-wong/audioarxiv/releases>`_ page.
 
+Version 0.1.2 (2025-04-20)
+--------------------------
+- Update the LICENSE and the intended audience.
+
+**Full Changelog**: https://github.com/isaac-cf-wong/audioarxiv/compare/v0.1.1...v0.1.2
+
 Version 0.1.1 (2025-04-20)
 --------------------------
 - Update the description of the package in pyproject.toml.
