@@ -1,3 +1,4 @@
+"""Configuration file for the Sphinx documentation builder."""
 # pylint: disable=redefined-builtin,invalid-name
 # Configuration file for the Sphinx documentation builder.
 #
