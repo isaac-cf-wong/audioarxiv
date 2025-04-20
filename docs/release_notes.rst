@@ -12,6 +12,8 @@ Version 0.1.1 (2025-04-20)
 --------------------------
 - Update the description of the package in pyproject.toml.
 
+**Full Changelog**: https://github.com/isaac-cf-wong/audioarxiv/compare/v0.1.0...v0.1.1
+
 Version 0.1.0 (2025-04-20)
 --------------------------
 
