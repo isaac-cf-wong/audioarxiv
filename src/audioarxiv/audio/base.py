@@ -55,7 +55,10 @@ def validate_audio_arguments(rate: float, volume: float, voice: int | str | None
 class Audio:
     """A class to generate audio from text.
     """
-    def __init__(self, rate: float = 140, volume: float = 0.9, voice: str | None = None, pause_seconds: float = 0.1,
+    def __init__(self, rate: float = 140,  # noqa: R0913 # pylint: disable=too-many-arguments
+                 volume: float = 0.9,
+                 voice: str | None = None,
+                 pause_seconds: float = 0.1,
                  validate_arguments: bool = True):
         """A class to configure the audio.
 
