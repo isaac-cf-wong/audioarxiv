@@ -57,7 +57,6 @@ def initialize_configuration(args: configargparse.Namespace) -> tuple:
     os.makedirs(config_dir, exist_ok=True)
     config_file = 'config.json'
     config_path = os.path.join(config_dir, config_file)
-
     # Default settings.
     settings = {
         'audio': {
@@ -159,36 +158,35 @@ def main():
     paper = Paper(**settings['paper'])
 
     # Search the paper.
-    if args.id is not None:
-        # Print the information
-        logger.info('Configuration file: %s', config_path)
-        logger.info('Audio settings')
-        for key, value in settings['audio'].items():
-            logger.info('%s: %s', key, value)
+    # Print the information
+    logger.info('Configuration file: %s', config_path)
+    logger.info('Audio settings')
+    for key, value in settings['audio'].items():
+        logger.info('%s: %s', key, value)
 
-        logger.info('Paper settings')
-        for key, value in settings['paper'].items():
-            logger.info('%s: %s', key, value)
+    logger.info('Paper settings')
+    for key, value in settings['paper'].items():
+        logger.info('%s: %s', key, value)
 
-        logger.info('Searching arxiv: %s...', args.id)
-        paper.search_by_arxiv_id(arxiv_id=args.id)
-        # Get the sections
-        sections = paper.sections
-        if args.output is None:
-            for section in sections:
-                audio.read_article(section['header'])
+    logger.info('Searching arxiv: %s...', args.id)
+    paper.search_by_arxiv_id(arxiv_id=args.id)
+    # Get the sections
+    sections = paper.sections
+    if args.output is None:
+        for section in sections:
+            audio.read_article(section['header'])
+            time.sleep(1)
+            for content in section['content']:
+                audio.read_article(content)
                 time.sleep(1)
-                for content in section['content']:
-                    audio.read_article(content)
-                    time.sleep(1)
-        else:
-            article = []
-            for section in sections:
-                if section['header'] is not None:
-                    article.append(section['header'])
-                if section['content'] is not None:
-                    article += section['content']
-            article = " ".join(article)
-            logger.info('Saving audio...')
-            audio.save_article(filename=args.output, article=article)
-            logger.info('Audio is saved to %s.', args.output)
+    else:
+        article = []
+        for section in sections:
+            if section['header'] is not None:
+                article.append(section['header'])
+            if section['content'] is not None:
+                article += section['content']
+        article = " ".join(article)
+        logger.info('Saving audio...')
+        audio.save_article(filename=args.output, article=article)
+        logger.info('Audio is saved to %s.', args.output)
