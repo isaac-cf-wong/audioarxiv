@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build](https://img.shields.io/github/actions/workflow/status/isaac-cf-wong/audioarxiv/CI.yml?branch=main)](https://github.com/isaac-cf-wong/audioarxiv/actions)
 [![Python Version](https://img.shields.io/pypi/pyversions/audioarxiv)](https://pypi.org/project/audioarxiv/)
+[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 
 **Turn arXiv papers into audio.**
 `audioarxiv` lets you fetch the research papers from arXiv and read them aloud.
@@ -41,7 +42,6 @@ conda install -c conda-forge arxivaudio
 audioarxiv --id "<arxiv id>"
 ```
 
-
 ### 🎙️ Text-to-Speech Options
 
 You can customize the voice engine using `pyttsx3` by specifying the speaking rate, volume, voice, and pause between sentences.
@@ -56,7 +56,6 @@ audioarxiv --id "<arxiv id>" --rate <rate> --volume <volume> --voice "<voice>" -
 - `pause-seconds`: Number of seconds to pause between sentences.
 
 The settings are saved, so you only need to provide your preferred settings once.
-
 
 ## Contributing
 
