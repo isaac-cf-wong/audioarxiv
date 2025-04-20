@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
@@ -64,3 +65,119 @@ def test_search_by_arxiv_id_and_properties(mock_client_class, mock_paper_object)
 def test_init_without_validation(mock_client_class):
     paper = Paper(validate_arguments=False)  # noqa: F841 # pylint: disable=unused-variable
     mock_client_class.assert_called_once()
+
+
+@patch("audioarxiv.resources.paper.arxiv.Client")
+def test_paper_properties_when_paper_is_none(mock_client_class, caplog):
+    mock_client = MagicMock()
+    mock_client_class.return_value = mock_client
+
+    logger = logging.getLogger('audioarxiv')  # Match the logger name
+    logger.setLevel(logging.ERROR)  # Ensure ERROR logs are allowed
+    logger.propagate = True
+
+    paper = Paper()
+
+    with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+        assert paper.title is None
+        assert 'paper is None.' in caplog.text
+    with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+        assert paper.abstract is None
+        assert 'paper is None.' in caplog.text
+    with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+        assert paper.authors is None
+        assert 'paper is None.' in caplog.text
+    with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+        assert paper.published is None
+        assert 'paper is None.' in caplog.text
+    with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+        assert paper.updated is None
+        assert 'paper is None.' in caplog.text
+
+
+@patch("audioarxiv.resources.paper.arxiv.Client")
+def test_download_pdf_with_valid_paper(mock_client_class, mock_paper_object):
+    mock_client = MagicMock()
+    mock_client.results.return_value = iter([mock_paper_object])
+    mock_client_class.return_value = mock_client
+
+    mock_paper_object.download_pdf.return_value = "path/to/pdf"
+
+    # Create the Paper instance
+    paper = Paper(validate_arguments=False)
+    paper.search_by_arxiv_id('arxiv_id')
+
+    # Call the `download_pdf` method
+    pdf_path = paper.download_pdf(dirpath='./', filename='test_paper.pdf')
+
+    # Assertions
+    mock_paper_object.download_pdf.assert_called_once_with(dirpath='./', filename='test_paper.pdf')
+    assert pdf_path == "path/to/pdf"
+
+
+@patch("audioarxiv.resources.paper.arxiv.Client")
+def test_download_pdf_when_no_paper(mock_client_class, caplog):
+    mock_client = MagicMock()
+    mock_client_class.return_value = mock_client
+
+    logger = logging.getLogger('audioarxiv')  # Match the logger name
+    logger.setLevel(logging.ERROR)  # Ensure ERROR logs are allowed
+    logger.propagate = True
+
+    # Setup: Create Paper instance with no paper assigned
+    paper = Paper(validate_arguments=False)
+
+    with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+        # Call `download_pdf`
+        pdf_path = paper.download_pdf(dirpath='./', filename='test_paper.pdf')
+
+        # Assertions
+        assert pdf_path is None
+        assert 'Paper is None. Cannot download PDF.' in caplog.text
+
+
+@patch("audioarxiv.resources.paper.arxiv.Client")
+def test_sections_with_valid_pdf(mock_client_class, mock_paper_object):
+    mock_client = MagicMock()
+    mock_client.results.return_value = iter([mock_paper_object])
+    mock_client_class.return_value = mock_client
+
+    # Setup: Create Paper instance with no paper assigned
+    paper = Paper(validate_arguments=False)
+    paper.search_by_arxiv_id('arxiv_id')
+
+    # Mock the `download_pdf` and `fitz.open` methods
+    with patch('fitz.open') as mock_fitz_open:
+        mock_page = MagicMock()
+        mock_page.get_text.return_value = [[None, None, None, None, "SECTION HEADER\n"],
+                                           [None, None, None, None, "Section Content"]]
+        mock_fitz_open.return_value = [mock_page]
+
+        # Call the `sections` property
+        sections = paper.sections
+
+        # Assertions
+        assert len(sections) > 0  # Should return at least one section
+        assert sections[0]["header"] == "SECTION HEADER"
+        assert "Section Content" in sections[0]["content"]
+
+
+@patch("audioarxiv.resources.paper.arxiv.Client")
+def test_sections_when_no_paper(mock_client_class, caplog):
+    mock_client = MagicMock()
+    mock_client_class.return_value = mock_client
+
+    logger = logging.getLogger('audioarxiv')  # Match the logger name
+    logger.setLevel(logging.ERROR)  # Ensure ERROR logs are allowed
+    logger.propagate = True
+
+    # Setup: Create Paper instance with no paper assigned
+    paper = Paper(validate_arguments=False)
+
+    with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+        # Call `sections` property
+        sections = paper.sections
+
+        # Assertions
+        assert 'Paper is None. Cannot download PDF.' in caplog.text
+        assert len(sections) == 0  # No sections should be found since paper is None

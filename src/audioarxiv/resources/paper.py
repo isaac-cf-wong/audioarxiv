@@ -172,6 +172,9 @@ class Paper:
             list: A list of sections. Each section is a dict with the header as the key and the content as the value.
         """
         if len(self._sections) == 0:
+            if self.paper is None:
+                logger.error('Paper is None. Cannot download PDF.')
+                return self._sections
             with tempfile.NamedTemporaryFile() as tmp:
                 filename = tmp.name
                 self.download_pdf(filename=filename)

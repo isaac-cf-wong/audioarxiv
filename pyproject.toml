@@ -55,6 +55,12 @@ test = [
     "pytest-github-actions-annotate-failures",
     "shellcheck-py==0.10.0.1"
 ]
+dev = [
+    "pytest",
+    "pre-commit",
+    "black",
+    "flake8"
+]
 
 [project.urls]
 Documentation = "https://isaac-cf-wong.github.io/audioarxiv"

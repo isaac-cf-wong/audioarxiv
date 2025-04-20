@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -118,3 +119,83 @@ def test_list_voices(mock_init, mock_logger):
     audio.list_voices()
 
     mock_logger.info.assert_any_call("Index %s: %s (ID: %s)", 0, "Voice 1", "voice1")
+
+
+def test_validate_audio_arguments_with_voice_index():
+    mock_voice = MagicMock()
+    mock_voice.id = "mock_voice_id"
+    with patch("pyttsx3.init") as mock_init:
+        mock_engine = MagicMock()
+        mock_engine.getProperty.return_value = [mock_voice]
+        mock_init.return_value = mock_engine
+
+        result = validate_audio_arguments(rate=140, volume=0.9, voice=0, pause_seconds=0.1)
+        assert result["voice"] == "mock_voice_id"
+
+
+def test_validate_audio_arguments_with_invalid_voice_type(caplog):
+    with patch("pyttsx3.init") as mock_init:
+        mock_engine = MagicMock()
+        mock_engine.getProperty.return_value = None
+        mock_init.return_value = mock_engine
+
+        logger = logging.getLogger('audioarxiv')  # Match the logger name
+        logger.setLevel(logging.ERROR)  # Ensure ERROR logs are allowed
+        logger.propagate = True
+
+        # Capture logs at ERROR level
+        with caplog.at_level(logging.ERROR, logger='audioarxiv'):
+            result = validate_audio_arguments(rate=140,
+                                              volume=0.9,
+                                              voice=[],  # type: ignore[argument]
+                                              pause_seconds=0.1)
+            print(caplog.text)
+            # Check if the log contains the expected error message
+            assert "Unsupported datatype of voice" in caplog.text
+            assert "<class 'list'>" in caplog.text  # Optionally check for the actual type in the log message
+
+            # Ensure the result['voice'] is None
+            assert result['voice'] is None
+
+
+def test_audio_sets_voice_property():
+    mock_voice = MagicMock()
+    mock_voice.id = "mock_voice_id"
+    with patch("pyttsx3.init") as mock_init:
+        mock_engine = MagicMock()
+        mock_engine.getProperty.return_value = [mock_voice]
+        mock_init.return_value = mock_engine
+
+        audio = Audio(voice="mock_voice_id")  # noqa: F841
+        # Ensure setProperty was called with the correct voice ID
+        mock_engine.setProperty.assert_any_call("voice", "mock_voice_id")
+
+
+@patch('audioarxiv.audio.base.pyttsx3.init')  # control TTS engine
+def test_read_article_with_non_string_input(mock_init, caplog):
+    mock_engine = MagicMock()
+    mock_init.return_value = mock_engine
+
+    logger = logging.getLogger('audioarxiv')  # Match the logger name
+    logger.setLevel(logging.WARNING)  # Ensure ERROR logs are allowed
+    logger.propagate = True
+
+    audio = Audio()
+    with caplog.at_level("WARNING"):
+        audio.read_article(article=12345)  # type: ignore[argument]
+        assert "is not str. Skipping." in caplog.text
+
+
+@patch('audioarxiv.audio.base.pyttsx3.init')  # control TTS engine
+def test_audio_stop(mock_init):
+    mock_engine = MagicMock()
+    mock_init.return_value = mock_engine  # Ensure the mock engine is returned
+
+    # Create the Audio instance, which should use the mocked engine
+    audio = Audio()
+
+    # Call the stop method
+    audio.stop()
+
+    # Verify that the stop method was called on the mocked engine
+    mock_engine.stop.assert_called_once()

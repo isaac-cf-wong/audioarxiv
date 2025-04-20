@@ -43,6 +43,7 @@ def validate_audio_arguments(rate: float, volume: float, voice: int | str | None
             logger.error('Invalid voice ID = %s. Keeping current voice.', voice)
     elif voice is not None:
         logger.error('Unsupported datatype of voice = %s. It must be either int or str.', type(voice))
+        voice = None
     if pause_seconds < 0:
         pause_seconds = 0.1
         logger.error('pause = %s must be non-negative. Keeping the current pause.', pause_seconds)

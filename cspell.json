@@ -28,6 +28,9 @@
         "recarray",
         "punkt",
         "srepr",
-        "fitz"
+        "fitz",
+        "caplog",
+        "venv",
+        "pytest",
     ]
 }
