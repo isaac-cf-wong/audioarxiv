@@ -3,9 +3,9 @@ requires = ["flit_core >=2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name =  "py-project-toml"
+name =  "audioarxiv"
 authors = [
-    {name = "Your name", email = "your@email.com"},
+    {name = "Isaac C. F. Wong", email = "isaac.cf.wong@gmail.com"},
 ]
 description = "Sample Python Project for creating a new Python Module"
 readme = "README.md"
@@ -14,13 +14,23 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11"
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
-requires-python = ">=3.8.1"
+requires-python = ">=3.9"
 dynamic = ["version"]
+dependencies = [
+    "configargparse",
+    "arxiv",
+    "pyttsx3",
+    "pymupdf",
+    "sympy",
+    "nltk",
+    "pandas",
+    'platformdirs',
+]
 
 [project.optional-dependencies]
 spark = [
@@ -51,8 +61,11 @@ Documentation = "https://github.com/microsoft/python-package-template/tree/main#
 Source = "https://github.com/microsoft/python-package-template"
 Tracker = "https://github.com/microsoft/python-package-template/issues"
 
+[project.scripts]
+audioarxiv = "audioarxiv.tools.main:main"
+
 [tool.flit.module]
-name = "python_package"
+name = "audioarxiv"
 
 [tool.bandit]
 exclude_dirs = ["build","dist","tests","scripts"]
@@ -112,6 +125,9 @@ executionEnvironments = [
 
 [tool.pytest.ini_options]
 addopts = "--cov-report xml:coverage.xml --cov src --cov-fail-under 0 --cov-append -m 'not integration'"
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
 pythonpath = [
   "src"
 ]

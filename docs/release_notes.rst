@@ -1,0 +1,21 @@
+Release Notes
+=============
+
+This page summarizes the key updates and changes in each release.
+
+.. note::
+
+   For the full history and additional context, visit the
+   `GitHub Releases <https://github.com/isaac-cf-wong/audioarxiv/releases>`_ page.
+
+Version 0.1.0 (2025-04-20)
+--------------------------
+
+- Initial public release of ``audioarxiv``.
+- Fetch papers from arXiv using arXiv API.
+- Read papers aloud with text-to-speech using ``pyttsx3``.
+- Command-line interface with customizable settings:
+   - Reading rate, voice, pause duration, output audio file, etc.
+- Modular structure with components for audio, preprocessing, and paper fetching.
+
+``audioarxiv`` is still in its early stage, and feedback or feature requests are welcome!
