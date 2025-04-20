@@ -1,7 +1,7 @@
 Installation
 ============
 
-To install audioarxiv, you need Python 3.8 or higher. You can install the package using pip:
+To install audioarxiv, you need Python 3.9 or higher. You can install the package using pip:
 
 .. tabs::
 
