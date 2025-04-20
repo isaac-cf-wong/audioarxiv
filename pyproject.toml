@@ -11,7 +11,7 @@ description = "Turn arXiv papers into audio. audioarxiv lets you fetch the resea
 readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.9",
