@@ -181,3 +181,67 @@ def test_sections_when_no_paper(mock_client_class, caplog):
         # Assertions
         assert 'Paper is None. Cannot download PDF.' in caplog.text
         assert len(sections) == 0  # No sections should be found since paper is None
+
+
+@patch("fitz.open")
+@patch.object(Paper, "download_pdf")
+def test_sections_extraction_logic(download_pdf_mock, fitz_open_mock):
+    # Setup fake PDF text blocks
+    mock_page = MagicMock()
+    mock_page.get_text.return_value = [
+        (0, 0, 100, 100, "1 Introduction", 0, 0, 0),
+        (0, 0, 100, 100, "This is the first paragraph.", 0, 0, 0),
+        (0, 0, 100, 100, "2 Related Work", 0, 0, 0),
+        (0, 0, 100, 100, "Some related work goes here.", 0, 0, 0),
+    ]
+
+    mock_doc = [mock_page]
+    fitz_open_mock.return_value = mock_doc
+
+    paper = Paper()
+    paper.paper = MagicMock()
+    download_pdf_mock.return_value = "mock_path"
+
+    sections = paper.sections
+
+    assert len(sections) == 2  # ✅ tests `if len(self._sections) == 0`
+    assert sections[0]["header"] == "1 Introduction"
+    assert sections[0]["content"] == ["This is the first paragraph."]
+    assert sections[1]["header"] == "2 Related Work"
+    assert sections[1]["content"] == ["Some related work goes here."]
+
+
+@patch("fitz.open")
+@patch.object(Paper, "download_pdf")
+def test_sections_only_appends_nonempty_sections(download_pdf_mock, fitz_open_mock):
+    # Only content, no section header detected
+    mock_page = MagicMock()
+    mock_page.get_text.return_value = [
+        (0, 0, 100, 100, "Just some content without a header", 0, 0, 0)
+    ]
+
+    mock_doc = [mock_page]
+    fitz_open_mock.return_value = mock_doc
+
+    paper = Paper()
+    paper.paper = MagicMock()
+    download_pdf_mock.return_value = "mock_path"
+
+    sections = paper.sections
+
+    # Tests `if current_section["header"] or current_section["content"]`
+    assert len(sections) == 1
+    assert sections[0]["header"] is None
+    assert sections[0]["content"] == ["Just some content without a header"]
+
+
+@patch("fitz.open")
+@patch.object(Paper, "download_pdf")
+def test_sections_empty_when_no_paper(download_pdf_mock, fitz_open_mock):
+    paper = Paper()
+    paper.paper = None  # simulate not setting a paper
+
+    sections = paper.sections
+
+    # Triggers early return due to missing paper
+    assert sections == []

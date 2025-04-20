@@ -186,10 +186,10 @@ def test_read_article_with_non_string_input(mock_init, caplog):
         assert "is not str. Skipping." in caplog.text
 
 
-@patch('audioarxiv.audio.base.pyttsx3.init')  # control TTS engine
+@patch("audioarxiv.audio.base.pyttsx3.init")
 def test_audio_stop(mock_init):
     mock_engine = MagicMock()
-    mock_init.return_value = mock_engine  # Ensure the mock engine is returned
+    mock_init.return_value = mock_engine
 
     # Create the Audio instance, which should use the mocked engine
     audio = Audio()
@@ -199,3 +199,75 @@ def test_audio_stop(mock_init):
 
     # Verify that the stop method was called on the mocked engine
     mock_engine.stop.assert_called_once()
+
+
+@patch("audioarxiv.audio.base.pyttsx3.init")
+def test_validate_arguments_enabled(mock_init):
+    mock_engine = MagicMock()
+    mock_init.return_value = mock_engine
+
+    # Arrange
+    with patch("audioarxiv.audio.base.validate_audio_arguments") as mock_validate:
+        mock_validate.return_value = {
+            "rate": 150,
+            "volume": 0.8,
+            "voice": "voice_id",
+            "pause_seconds": 0.2
+        }
+
+        # Act
+        audio = Audio(rate=150,  # noqa: F841 # pylint: disable=unused-variable
+                      volume=0.8,
+                      voice="voice_id",
+                      pause_seconds=0.2,
+                      validate_arguments=True)
+
+        # Assert
+        mock_validate.assert_called_once()
+        mock_engine.setProperty.assert_any_call('rate', 150)
+        mock_engine.setProperty.assert_any_call('volume', 0.8)
+        mock_engine.setProperty.assert_any_call('voice', 'voice_id')
+
+
+@patch("audioarxiv.audio.base.pyttsx3.init")
+def test_validate_arguments_disabled(mock_init):
+    mock_engine = MagicMock()
+    mock_init.return_value = mock_engine
+    # Should not call `validate_audio_arguments`
+    with patch("audioarxiv.audio.base.validate_audio_arguments") as mock_validate:
+        audio = Audio(rate=150,  # noqa: F841 # pylint: disable=unused-variable
+                      volume=0.8,
+                      voice="voice_id",
+                      pause_seconds=0.2,
+                      validate_arguments=False)
+
+        mock_validate.assert_not_called()
+        mock_engine.setProperty.assert_any_call('rate', 150)
+        mock_engine.setProperty.assert_any_call('volume', 0.8)
+        mock_engine.setProperty.assert_any_call('voice', 'voice_id')
+
+
+@pytest.mark.parametrize("rate", [100, None])
+@patch("audioarxiv.audio.base.pyttsx3.init")
+def test_rate_handling(mock_init, rate):
+    mock_engine = MagicMock()
+    mock_init.return_value = mock_engine
+    audio = Audio(rate=rate, volume=0.8, validate_arguments=False)  # noqa: F841 # pylint: disable=unused-variable
+    if rate is not None:
+        mock_engine.setProperty.assert_any_call('rate', rate)
+    else:
+        for call in mock_engine.setProperty.call_args_list:
+            assert call[0][0] != 'rate'
+
+
+@pytest.mark.parametrize("volume", [0.5, None])
+@patch("audioarxiv.audio.base.pyttsx3.init")
+def test_volume_handling(mock_init, volume):
+    mock_engine = MagicMock()
+    mock_init.return_value = mock_engine
+    audio = Audio(rate=140, volume=volume, validate_arguments=False) # noqa: F841 # pylint: disable=unused-variable
+    if volume is not None:
+        mock_engine.setProperty.assert_any_call('volume', volume)
+    else:
+        for call in mock_engine.setProperty.call_args_list:
+            assert call[0][0] != 'volume'
