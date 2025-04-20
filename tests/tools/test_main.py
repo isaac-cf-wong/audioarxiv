@@ -6,11 +6,14 @@ import tempfile
 from unittest import mock
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from audioarxiv.tools.main import (handle_exit, initialize_configuration, main,
                                    save_settings)
 
 
 # Patch where classes/functions are used, not defined
+@pytest.mark.integration
 @patch("audioarxiv.tools.main.Audio")
 @patch("audioarxiv.tools.main.Paper")
 @patch("audioarxiv.tools.main.configargparse.ArgParser.parse_args")
@@ -44,6 +47,7 @@ def test_main_with_id_and_output(mock_parse_args, mock_Paper, mock_Audio):
     assert mock_audio.save_article.call_args[1]["filename"] == "output.mp3"
 
 
+@pytest.mark.integration
 @patch("audioarxiv.tools.main.Audio")
 @patch("audioarxiv.tools.main.configargparse.ArgParser.parse_args")
 def test_main_list_voices(mock_parse_args, mock_Audio):
@@ -58,6 +62,7 @@ def test_main_list_voices(mock_parse_args, mock_Audio):
     mock_audio.list_voices.assert_called_once()
 
 
+@pytest.mark.integration
 @patch("audioarxiv.tools.main.validate_audio_arguments")
 @patch("audioarxiv.tools.main.validate_paper_arguments")
 def test_initialize_configuration_defaults(mock_validate_paper, mock_validate_audio):
@@ -77,6 +82,7 @@ def test_initialize_configuration_defaults(mock_validate_paper, mock_validate_au
             assert os.path.exists(path)
 
 
+@pytest.mark.integration
 @patch("builtins.open", new_callable=mock.mock_open)
 def test_save_settings(mock_open_func):
     settings = {"audio": {"rate": 150}, "paper": {"page_size": 50}}
@@ -86,6 +92,7 @@ def test_save_settings(mock_open_func):
     handle.write.assert_called()
 
 
+@pytest.mark.integration
 @patch("audioarxiv.tools.main.sys.exit")
 def test_handle_exit(mock_exit):
     with patch("audioarxiv.tools.main.logger.info") as mock_logger:

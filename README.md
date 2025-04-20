@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build](https://img.shields.io/github/actions/workflow/status/isaac-cf-wong/audioarxiv/CI.yml?branch=main)](https://github.com/isaac-cf-wong/audioarxiv/actions)
 [![Python Version](https://img.shields.io/pypi/pyversions/audioarxiv)](https://pypi.org/project/audioarxiv/)
-[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+[![Security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 
 **Turn arXiv papers into audio.**
 `audioarxiv` lets you fetch the research papers from arXiv and read them aloud.
