@@ -11,6 +11,7 @@ This page summarizes the key updates and changes in each release.
 Version 0.1.2 (2025-04-20)
 --------------------------
 - Update the LICENSE and the intended audience.
+- Update text in SUPPORT.md, CODE_OF_CONDUCT.md.
 
 **Full Changelog**: https://github.com/isaac-cf-wong/audioarxiv/compare/v0.1.1...v0.1.2
 

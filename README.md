@@ -64,4 +64,14 @@ The settings are saved, so you only need to provide your preferred settings once
 
 ## Contributing
 
-This project welcomes contributions and suggestions. For details, visit the repository's [Contributor License Agreement (CLA)](https://cla.opensource.microsoft.com) and [Code of Conduct](https://opensource.microsoft.com/codeofconduct/) pages.
+Contributions and suggestions are welcome! Whether it's fixing bugs, improving documentation, or adding new features, your help is appreciated.
+
+Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
+
+To get started:
+
+- Fork the repository
+- Create a new branch for your changes
+- Submit a pull request
+
+If you're unsure where to begin, feel free to open an issue or ask for guidance!
