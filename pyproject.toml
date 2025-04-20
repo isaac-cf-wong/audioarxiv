@@ -61,6 +61,7 @@ Documentation = "https://isaac-cf-wong.github.io/audioarxiv"
 Source = "https://github.com/isaac-cf-wong/audioarxiv"
 Tracker = "https://github.com/isaac-cf-wong/audioarxiv/issues"
 Homepage = "https://github.com/isaac-cf-wong/audioarxiv"
+"Release Notes" = "https://github.com/isaac-cf-wong/audioarxiv/releases"
 
 [project.scripts]
 audioarxiv = "audioarxiv.tools.main:main"
