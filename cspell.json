@@ -32,5 +32,6 @@
         "caplog",
         "venv",
         "pytest",
+        "Luhn",
     ]
 }
