@@ -39,7 +39,7 @@ jobs:
           pytest --cov=audioarxiv --cov-report=xml -m ""
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5.4.3
+        uses: codecov/codecov-action@v5.5.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
